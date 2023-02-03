@@ -1,4 +1,4 @@
-Package: geosphere
+Package: gsdata
 Type: Package
 Title: Accessing Data from Geosphere (ZAMG)
 Version: 0.0-1

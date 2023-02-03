@@ -15,9 +15,9 @@ check: document
 	Rscript -e "devtools::check()"
 
 test: install
-	Rscript -e "tinytest::test_package('geosphere')"
+	Rscript -e "tinytest::test_package('gsdata')"
 testwarn: install
-	Rscript -e "tinytest::test_package('geosphere'); warnings()"
+	Rscript -e "tinytest::test_package('gsdata'); warnings()"
 
 coverage: install
 	Rscript -e 'covr::report(covr::package_coverage(), file = "../coverage.html")'
@@ -30,4 +30,4 @@ cmd: SHELL:=/bin/bash
 cmd: cmd
 	(cd ../ && \
 		R CMD build --no-build-vignettes topmodels && \
-		R CMD INSTALL geosphere_$(shell printf "%s"${packageversion}).tar.gz)
+		R CMD INSTALL gsdata_$(shell printf "%s"${packageversion}).tar.gz)
