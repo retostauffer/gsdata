@@ -13,7 +13,8 @@ gs_stationdata(
   station_ids,
   expert = FALSE,
   version = 1L,
-  format = NULL
+  format = NULL,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,16 @@ do not have to be evaluated.}
 
 \item{format}{\code{NULL} (default) or character string, used if \code{start}/\code{end}
 are characters in a specific (non ISO) format.}
+
+\item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
+}
+\value{
+If only data for one single station (\code{length(station_ids) == 1}) is requested,
+a \code{zoo} object will be returned if data is available. If no data is available,
+\code{NULL} will be returned.
+
+When multiple stations are requested a list of \code{zoo} object (or \code{NULL} if no data
+is available) is returned. The name of the list corresponds to the station id requested.
 }
 \description{
 Accessing the API endpoint \code{v<version>/station},

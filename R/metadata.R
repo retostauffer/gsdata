@@ -12,6 +12,7 @@
 #' @author Reto Stauffer
 #' @export
 #' @importFrom httr GET status_code content
+#' @importFrom sf st_as_sf
 gs_metadata <- function(mode, resource_id, version = 1L) {
 
     # Getting available dataset dynamically
@@ -30,9 +31,7 @@ gs_metadata <- function(mode, resource_id, version = 1L) {
     # Downloading meta data
     URL <- paste(dataset$url, "metadata", sep = "/")
     req <- GET(URL)
-    if (!status_code(req) == 200)
-        stop("problems downloading meta data from", URL)
-
+    if (!status_code(req) == 200) stop("problems downloading meta data from ", URL)
     res <- content(req)
 
     # Evaluate result
@@ -45,6 +44,7 @@ gs_metadata <- function(mode, resource_id, version = 1L) {
                               id         = as.integer(id),
                               valid_from = as.POSIXct(valid_from, format = "%Y-%m-%dT%H:%M+00:00"),
                               valid_to   = as.POSIXct(valid_to,   format = "%Y-%m-%dT%H:%M+00:00"))
+    res$stations <- st_as_sf(res$stations, coords = c("lon", "lat"), crs = 4326)
     res$url <- URL
     return(res)
 
