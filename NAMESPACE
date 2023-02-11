@@ -2,6 +2,7 @@
 
 S3method(plot,gs_stationdata)
 S3method(print,gs_stationdata)
+export(gs_datasets)
 export(gs_metadata)
 export(gs_stationdata)
 importFrom(httr,GET)

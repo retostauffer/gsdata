@@ -13,6 +13,7 @@
 #'
 #' @importFrom httr GET content status_code
 #' @author Reto Stauffer
+#' @export
 gs_datasets <- function(version = 1L, config = list()) {
 
     # Get base URL; performs version sanity check
