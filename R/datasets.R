@@ -5,8 +5,8 @@
 #' The Geosphere (ZAMG) datahub API provides an endpoint to get all
 #' available datasets. This function returns 
 #'
-#' @param \dots query arguments passed to the API. See 'Details' for 
-#'        more examples and classical use cases.
+#' @param type \code{NULL} or character of length \code{1} to filter the request.
+#' @param mode \code{NULL} or character of length \code{1} to filter the request.
 #' @param version integer, API version (defaults to 1).
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
@@ -17,10 +17,8 @@
 #'
 #' @details
 #' The API provides an enpoint to get all available data sets which
-#' can be filtered using the \code{\dots} argument. If nothing is specified,
-#' all available data sets will be returned as a \code{data.frame}.
-#' Filtering for any of the variables contained in this \code{data.frame}
-#' is possible. Classical usecase:
+#' can be filtered using the arguments \code{type} and/or \code{mode}.
+#' Classical usecase:
 #'
 #' Return all data sets where \code{mode == "historical"}:
 #' * \code{gs_datasets(mode = "historical")}
@@ -28,29 +26,24 @@
 #' Return all data sets where \code{type == "grid"}:
 #' * \code{gs_datasets(type = "grid")}
 #'
-#' Return all data sets of \code{type == "timeseries"} where one of the
-#' possible response formats is \code{response_format == "geojson")}:
-#' * \code{gs_datasets(type = "timeseries", response_formats = "geojson")}
-#'
-#' This can of couse also be done using \code{subset()} or other subsetting
-#' methods in \emph{R}, however, when specified as input arguments on the \code{\dots}
-#' argument this job is taken care of by the API. Unknown arguments will be ignored
-#' (e.g., \code{country}), if filtering does not work the API will responde
-#' with an error which will be thrown (e.g., when using \code{type = "spatialdata"})
-#' and a list of allowed options will be shown as returned by the API.
+#' Can be combined (settinb both \code{type} and \code{mode}).
 #'
 #' @importFrom httr GET content status_code
 #' @author Reto Stauffer
 #' @export
-gs_datasets <- function(..., version = 1L, config = list(), verbose = FALSE) {
+gs_datasets <- function(type = NULL, mode = NULL, version = 1L, config = list(), verbose = FALSE) {
+    stopifnot("argument 'verbose' must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
+    stopifnot("argument 'config' must be a (named) list" = is.list(config))
+    stopifnot("argument 'type' must be NULL or a character string" = is.null(type) || (is.character(type) & length(type) == 1L))
+    stopifnot("argument 'mode' must be NULL or a character string" = is.null(mode) || (is.character(mode) & length(mode) == 1L))
 
     # Parsing 'query' arguments (if any)
-    query <- as.list(match.call(expand.dots = TRUE))[-1]
-    query <- query[!grepl("^(version|config|verbose)$", names(query))]
-
     # Get base URL; performs version sanity check
     baseurl <- gs_baseurl(version)
     URL     <- paste(baseurl, "datasets", sep = "/")
+
+    # Query args
+    query <- list(); query$type <- type; query$mode <- mode
 
     # Verbosity
     if (verbose)

@@ -4,16 +4,25 @@
 \alias{gs_datasets}
 \title{Getting Available Datasets}
 \usage{
-gs_datasets(type = NULL, version = 1L, config = list())
+gs_datasets(
+  type = NULL,
+  mode = NULL,
+  version = 1L,
+  config = list(),
+  verbose = FALSE
+)
 }
 \arguments{
-\item{type}{\code{NULL} or character. Allows to filter certain
-data set types (see 'Details').}
+\item{type}{\code{NULL} or character of length \code{1} to filter the request.}
+
+\item{mode}{\code{NULL} or character of length \code{1} to filter the request.}
 
 \item{version}{integer, API version (defaults to 1).}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}
+
+\item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
 }
 \value{
 Returns a \code{data.frame} with all available data types and
@@ -25,14 +34,16 @@ available datasets. This function returns
 }
 \details{
 The API provides an enpoint to get all available data sets which
-can be filtered. If \code{type = NULL} all available data sets
-will be returned, else a specific type is requested.
+can be filtered using the arguments \code{type} and/or \code{mode}.
+Classical usecase:
 
-* Unfiltered: <https://dataset.api.hub.zamg.ac.at/v1/datasets>
-* Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=station>
-* Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=timeseries>
-* Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=grid>
-* \dots
+Return all data sets where \code{mode == "historical"}:
+* \code{gs_datasets(mode = "historical")}
+
+Return all data sets where \code{type == "grid"}:
+* \code{gs_datasets(type = "grid")}
+
+Can be combined (settinb both \code{type} and \code{mode}).
 }
 \author{
 Reto Stauffer

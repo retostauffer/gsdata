@@ -16,4 +16,12 @@ expect_true(all(sapply(ds, is.character)),
                  info = "Expecting all variables to be of class character")
 
 
+# Testing additional arguments
+expect_error(gs_datasets(verbose = "foo"))
+expect_error(gs_datasets(verbose = c(TRUE, TRUE)))
+expect_error(gs_dataset(config = "foo"))
+expect_error(gs_dataset(config = 1:3))
+
+
+
 
