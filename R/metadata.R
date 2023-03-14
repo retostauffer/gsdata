@@ -16,7 +16,7 @@
 gs_metadata <- function(mode, resource_id, version = 1L) {
 
     # Getting available dataset dynamically
-    dataset <- gs_datasets(version)
+    dataset <- gs_datasets(NULL, version)
 
     # Sanity checks
     mode <- match.arg(mode, unique(dataset$mode))

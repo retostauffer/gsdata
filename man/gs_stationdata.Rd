@@ -12,6 +12,7 @@ gs_stationdata(
   end,
   station_ids,
   expert = FALSE,
+  limitcheck = TRUE,
   version = 1L,
   format = NULL,
   verbose = FALSE
@@ -33,6 +34,9 @@ In case of character in a non-ISO format \code{format} can be used (see below).}
 check if the input arguments are valid. May result in unsuccessful requests
 but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 do not have to be evaluated.}
+
+\item{limitcheck}{logical, defaults to \code{TRUE}. Will guess the number of elements
+to be retrieved and stops if this exceeds the API limits; see 'Details'.}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
 
@@ -58,7 +62,95 @@ This function is a convenience function for downloading different sets of
 station data from the ZAMG data hub (now Geosphere). The API may change and additional
 resources may be added, for details see \code{\url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets}}.
 
-To see what's available call \code{subset(gs_datasets(), type == "station")}.
+To see what's available call \code{gs_datasets("station")}.
+
+The flag \code{limitcheck} guesses the number of elements to be retrieved as the API has a
+limit set. Trying to avoid to send a too large request and only waiting for the API to fail
+after a decent amount of time (limits exceeded). See
+\url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload}.
+}
+\examples{
+######################################################################
+## Example for synop data
+
+## Loading meta information
+meta <- gs_metadata(mode = "historical", resource_id = "synop-v1-1h")
+## For station information check
+head(meta$stations)
+## For available parameters (for this mode/resource_id) check
+head(meta$parameters)
+
+## Getting data over 48 hours for one single station
+## Note: If expert = FALSE (default) gs_stationdata()
+## will internally call gs_metadata() once more to check
+## if the requested station_ids as well as the parameters
+## exist for the data set specified (mode/resource_id).
+mayrhofen <- gs_stationdata(mode        = "historical",
+                            resource_id = "synop-v1-1h",
+                            start       = "2020-01-01",
+                            end         = "2020-01-03",
+                            parameters  = c("T", "Td", "ff"),
+                            station_ids = 11330,
+                            expert      = TRUE)
+
+library("zoo")
+plot(mayrhofen, screen = c(1, 1, 2), col = c(2, 3, 4))
+
+## Getting data over 48 hours for three stations simultanously
+## Mayrhofen Tirol, Achenkirch Tirol (no data), and Innsbruck Airport Tirol
+x <- gs_stationdata(mode        = "historical",
+                    resource_id = "synop-v1-1h",
+                    start       = "2020-01-01",
+                    end         = "2020-01-03",
+                    parameters  = c("T", "Td", "ff"),
+                    station_ids = c(11330, 11328, 11120),
+                    expert      = TRUE)
+plot(x[["11330"]], screen = c(1, 1, 2), col = c(2, 3, 4))
+is.null(x[["11328"]])
+plot(x[["11120"]], screen = c(1, 1, 2), col = c(2, 3, 4))
+
+######################################################################
+## Example for 10min TAWES data
+# meta$parameter contains available parameters,
+# meta$stations  available stations
+meta <- gs_metadata("historical", "tawes-v1-10min")
+uibk <- gs_stationdata(mode = "current",
+               resource_id = "tawes-v1-10min",
+               start = "2023-01-01",
+               end   = "2023-02-01",
+               parameters = c("TL", "TP", "FFAM", "FFX"),
+               station_ids = 11121,
+               expert      = TRUE)
+plot(uibk,
+     screens = c(1, 1, 2, 2),
+     col = c(2, 3, 4, 8),
+     ylab = c("temperature\nand dewpoint", "mean wind\nand gusts"))
+
+
+######################################################################
+## Example for annual histalp data
+gs_metadata("historical", "histalp-v1-1y")
+bregenz <- gs_stationdata(mode        = "historical",
+                          resource_id = "histalp-v1-1y",
+                          start       = "1854-01-01",
+                          end         = "2022-01-01",
+                          parameters  = c("R01", "T01"),
+                          station_ids = 23)
+plot(bregenz, col = c(4, 2))
+
+######################################################################
+## Example for daily climatological records
+meta <- gs_metadata("historical", "klima-v1-1d")
+achenkirch <- gs_stationdata(mode        = "historical",
+                             resource_id = "klima-v1-1d",
+                             start       = "2020-06-01",
+                             end         = "2022-12-31",
+                             parameters  = c("nied", "nied07", "nied19", "sonne"),
+                             station_ids = 8807,
+                             expert      = TRUE)
+head(achenkirch)
+plot(achenkirch, type = "h")
+
 }
 \author{
 Reto Stauffer

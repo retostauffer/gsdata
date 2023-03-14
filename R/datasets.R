@@ -5,25 +5,47 @@
 #' The Geosphere (ZAMG) datahub API provides an endpoint to get all
 #' available datasets. This function returns 
 #'
+#' @param type \code{NULL} or character. Allows to filter certain
+#'        data set types (see 'Details').
 #' @param version integer, API version (defaults to 1).
-#' @param config empty list, forwarded to \code{\link[httr]{GET}} if needed.
+#' @param config empty list by default; can be a named list to be fowrarded
+#'        to the \code{httr::GET} request if needed.
 #'
 #' @return Returns a \code{data.frame} with all available data types and
 #' API endpoints.
 #'
+#' @details
+#' The API provides an enpoint to get all available data sets which
+#' can be filtered. If \code{type = NULL} all available data sets
+#' will be returned, else a specific type is requested.
+#'
+#' * Unfiltered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets}
+#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=station}
+#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=timeseries}
+#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=grid}
+#' * \dots
+#'
 #' @importFrom httr GET content status_code
 #' @author Reto Stauffer
 #' @export
-gs_datasets <- function(version = 1L, config = list()) {
+gs_datasets <- function(type = NULL, version = 1L, config = list()) {
+    stopifnot("wrong argument 'type'" = is.null(type) || (is.character(type) && length(type) == 1))
 
     # Get base URL; performs version sanity check
     baseurl <- gs_baseurl(version)
 
-    URL <- paste(baseurl, "datasets", sep = "/")
+    args <- if (is.null(type)) list() else list(type = type)
+    URL  <- paste(baseurl, "datasets", sep = "/")
 
-    req <- GET(URL, config = config)
-    if (!status_code(req) == 200)
-        stop("HTTP request error: got status code", status_code(req))
+    req  <- GET(URL, config = config, query = args)
+    if (!status_code(req) == 200) {
+        tmp <- try(content(req))
+        if (is.list(tmp) && !is.null(tmp$detail[[1]]$msg)) {
+            stop(tmp$detail[[1]]$msg)
+        } else {
+            stop("HTTP request error: got status code", status_code(req))
+        }
+    }
     content <- content(req)
 
     keys <- unique(unlist(lapply(content, names)))

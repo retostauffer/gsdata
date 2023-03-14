@@ -4,12 +4,16 @@
 \alias{gs_datasets}
 \title{Getting Available Datasets}
 \usage{
-gs_datasets(version = 1L, config = list())
+gs_datasets(type = NULL, version = 1L, config = list())
 }
 \arguments{
+\item{type}{\code{NULL} or character. Allows to filter certain
+data set types (see 'Details').}
+
 \item{version}{integer, API version (defaults to 1).}
 
-\item{config}{empty list, forwarded to \code{\link[httr]{GET}} if needed.}
+\item{config}{empty list by default; can be a named list to be fowrarded
+to the \code{httr::GET} request if needed.}
 }
 \value{
 Returns a \code{data.frame} with all available data types and
@@ -18,6 +22,17 @@ API endpoints.
 \description{
 The Geosphere (ZAMG) datahub API provides an endpoint to get all
 available datasets. This function returns
+}
+\details{
+The API provides an enpoint to get all available data sets which
+can be filtered. If \code{type = NULL} all available data sets
+will be returned, else a specific type is requested.
+
+* Unfiltered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets}
+* Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=station}
+* Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=timeseries}
+* Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=grid}
+* \dots
 }
 \author{
 Reto Stauffer
