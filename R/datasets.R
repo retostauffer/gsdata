@@ -19,10 +19,10 @@
 #' can be filtered. If \code{type = NULL} all available data sets
 #' will be returned, else a specific type is requested.
 #'
-#' * Unfiltered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets}
-#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=station}
-#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=timeseries}
-#' * Filtered: \url{https://dataset.api.hub.zamg.ac.at/v1/datasets?type=grid}
+#' * Unfiltered: <https://dataset.api.hub.zamg.ac.at/v1/datasets>
+#' * Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=station>
+#' * Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=timeseries>
+#' * Filtered: <https://dataset.api.hub.zamg.ac.at/v1/datasets?type=grid>
 #' * \dots
 #'
 #' @importFrom httr GET content status_code

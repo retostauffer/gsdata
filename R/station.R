@@ -3,7 +3,7 @@
 #' Downloading Station Data
 #'
 #' Accessing the API endpoint \code{v<version>/station},
-#' see \code{\url{https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html}}.
+#' see <https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html>.
 #'
 #' @param mode character, specify mode of data.
 #' @param resource_id character, specify resource identifier of data.
@@ -24,14 +24,14 @@
 #'
 #' @details This function is a convenience function for downloading different sets of
 #' station data from the ZAMG data hub (now Geosphere). The API may change and additional
-#' resources may be added, for details see \code{\url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets}}.
+#' resources may be added, for details see <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets>.
 #'
 #' To see what's available call \code{gs_datasets("station")}.
 #'
 #' The flag \code{limitcheck} guesses the number of elements to be retrieved as the API has a
 #' limit set. Trying to avoid to send a too large request and only waiting for the API to fail
 #' after a decent amount of time (limits exceeded). See
-#' \url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload}.
+#' <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload>.
 #'
 #' @return If only data for one single station (\code{length(station_ids) == 1}) is requested,
 #' a \code{zoo} object will be returned if data is available. If no data is available,
@@ -124,6 +124,7 @@
 #'
 #' @author Reto Stauffer
 #' @export
+#' @importFrom sf st_point
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo
 gs_stationdata <- function(mode, resource_id, parameters, start, end, station_ids, expert = FALSE,

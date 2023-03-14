@@ -22,12 +22,3 @@ testwarn: install
 coverage: install
 	Rscript -e 'covr::report(covr::package_coverage(), file = "../coverage.html")'
 
-# ---------------------------------------------------
-# Command line version
-# ---------------------------------------------------
-packageversion:=$(shell cat DESCRIPTION | egrep Version | sed 's/Version://g')
-cmd: SHELL:=/bin/bash
-cmd: cmd
-	(cd ../ && \
-		R CMD build --no-build-vignettes topmodels && \
-		R CMD INSTALL gsdata_$(shell printf "%s"${packageversion}).tar.gz)

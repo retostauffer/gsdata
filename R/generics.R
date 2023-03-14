@@ -23,7 +23,7 @@ print.gs_stationdata <- function(x, ...) {
 
 #' @export
 #' @exportS3Method plot gs_stationdata
-#' @importFrom zoo plot.zoo
+#' @importFrom zoo plot.zoo index
 plot.gs_stationdata <- function(x, main = NULL, xlab = NULL, ...) {
 
     if (is.null(main)) {

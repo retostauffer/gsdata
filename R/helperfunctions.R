@@ -38,9 +38,9 @@ gs_baseurl <- function(version = 1L) {
 #'
 #' @author Reto Stauffer
 #' @export
-gs_temporal_interval <- function(x) {
-    stopifnot("argument 'x' must be of class character" = is.character(x),
-              "argument 'x' must be of length >= 1"     = length(x) >= 1)
+gs_temporal_interval <- function(resource_id) {
+    stopifnot("argument 'resource_id' must be of class character" = is.character(resource_id),
+              "argument 'resource_id' must be of length >= 1"     = length(resource_id) >= 1)
     # Convert extracted string to seconds
     str2sec <- function(x) {
         n <- as.numeric(regmatches(x, regexpr("^[0-9]+", x)))
@@ -62,16 +62,16 @@ gs_temporal_interval <- function(x) {
     # Step 1 search pattern
     pattern  <- "-v[0-9]+-[0-9]+[a-z]+"
     # Find matching elements
-    idx      <- grep(pattern, x, perl = TRUE)
+    idx      <- grep(pattern, resource_id, perl = TRUE)
     # Empty return vector
-    res      <- rep(NA_integer_, length(x))
+    res      <- rep(NA_integer_, length(resource_id))
     # Extract interval and insert; or leave it NA
-    tmp      <- regmatches(x, regexpr(pattern, x, perl = TRUE))
+    tmp      <- regmatches(resource_id, regexpr(pattern, resource_id, perl = TRUE))
     tmp      <- regmatches(tmp, regexpr("[0-9]+[a-z]+$", tmp))
     res[idx] <- as.integer(sapply(tmp, str2sec))
     if (any(is.na(res)))
         warning("not able to extract temporal interval from ",
-                paste(x[is.na(res)], collapse = ", "), ", returning NA.", sep = "")
+                paste(resource_id[is.na(res)], collapse = ", "), ", returning NA.", sep = "")
     return(res)
 }
 

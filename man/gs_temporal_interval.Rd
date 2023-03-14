@@ -4,7 +4,7 @@
 \alias{gs_temporal_interval}
 \title{Extract/Calculate Temporal Interval}
 \usage{
-gs_temporal_interval(x)
+gs_temporal_interval(resource_id)
 }
 \arguments{
 \item{resource_id}{character, name of the \code{resource_id}}
