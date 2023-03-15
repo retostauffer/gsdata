@@ -5,7 +5,7 @@ Version: 0.0-1
 Date: 2023-02-02
 Author: Reto Stauffer
 Maintainer: Reto Stauffer <reto.stauffer@uibk.ac.at>
-Depends: httr, zoo, sf
+Depends: httr, zoo, sf, parsedate
 Description: Small package to interface the Geosphere (ZAMG) web API to retrieve data. There are multiple data sets and not everything might be included yet; focusing on station data.
 License: GPL-2 | GPL-3
 RoxygenNote: 7.2.3

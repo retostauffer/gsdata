@@ -7,15 +7,15 @@
 gs_stationdata(
   mode,
   resource_id,
-  parameters,
+  parameters = NULL,
   start,
   end,
   station_ids,
   expert = FALSE,
-  limitcheck = TRUE,
   version = 1L,
   verbose = FALSE,
   format = NULL,
+  limit = 1e+07,
   config = list()
 )
 }
@@ -36,15 +36,15 @@ check if the input arguments are valid. May result in unsuccessful requests
 but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 do not have to be evaluated.}
 
-\item{limitcheck}{logical, defaults to \code{TRUE}. Will guess the number of elements
-to be retrieved and stops if this exceeds the API limits; see 'Details'.}
-
 \item{version}{integer, API version (defaults to \code{1L}).}
 
 \item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
 
 \item{format}{\code{NULL} (default) or character string, used if \code{start}/\code{end}
 are characters in a specific (non ISO) format.}
+
+\item{limit}{integer, API data request limit. If the request sent by the user
+exceeds this limit, the request will be split into batches automatically.}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}
@@ -68,9 +68,11 @@ resources may be added, for details see \url{https://dataset.api.hub.zamg.ac.at/
 
 To see what's available call \code{gs_datasets("station")}.
 
-The flag \code{limitcheck} guesses the number of elements to be retrieved as the API has a
-limit set. Trying to avoid to send a too large request and only waiting for the API to fail
-after a decent amount of time (limits exceeded). See
+The API has a limit for the number of elements for one request. The calculation
+is based on the number of expecte elements (i.e., number of stations times number
+of parameters times number of time steps). This function will pre-calculate the number
+of expected elements and split the request into batches along the time dimension - if needed.
+For current limits see
 \url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload}.
 }
 \examples{

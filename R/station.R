@@ -15,12 +15,12 @@
 #'        check if the input arguments are valid. May result in unsuccessful requests
 #'        but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 #'        do not have to be evaluated.
-#' @param limitcheck logical, defaults to \code{TRUE}. Will guess the number of elements
-#'        to be retrieved and stops if this exceeds the API limits; see 'Details'.
 #' @param version integer, API version (defaults to \code{1L}).
 #' @param verbose logical, if set \code{TRUE} some more output will be produced.
 #' @param format \code{NULL} (default) or character string, used if \code{start}/\code{end}
 #'        are characters in a specific (non ISO) format.
+#' @param limit integer, API data request limit. If the request sent by the user
+#'        exceeds this limit, the request will be split into batches automatically.
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
 #'
@@ -30,9 +30,11 @@
 #'
 #' To see what's available call \code{gs_datasets("station")}.
 #'
-#' The flag \code{limitcheck} guesses the number of elements to be retrieved as the API has a
-#' limit set. Trying to avoid to send a too large request and only waiting for the API to fail
-#' after a decent amount of time (limits exceeded). See
+#' The API has a limit for the number of elements for one request. The calculation
+#' is based on the number of expecte elements (i.e., number of stations times number
+#' of parameters times number of time steps). This function will pre-calculate the number
+#' of expected elements and split the request into batches along the time dimension - if needed.
+#' For current limits see
 #' <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload>.
 #'
 #' @return If only data for one single station (\code{length(station_ids) == 1}) is requested,
@@ -127,24 +129,26 @@
 #' @author Reto Stauffer
 #' @export
 #' @importFrom sf st_point
+#' @importFrom parsedate parse_iso_8601
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo
-gs_stationdata <- function(mode, resource_id, parameters, start, end, station_ids, expert = FALSE,
-                           limitcheck = TRUE, version = 1L, verbose = FALSE, format = NULL, config = list()) {
+gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, station_ids, expert = FALSE,
+                           version = 1L, verbose = FALSE, format = NULL, limit = 1e7, config = list()) {
+
+    stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
+    stopifnot("argument 'mode' must be character of length 1" = is.character(resource_id) & length(mode) == 1L)
+    stopifnot("argument 'parameters' must be NULL or a character vector of length > 0" =
+              is.null(parameters) || (is.character(parameters) & length(parameters) > 0))
 
     stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
-    stopifnot("argument limitcheck must be logical TRUE or FALSE" = isTRUE(limitcheck) || isFALSE(limitcheck))
-
     # Getting available dataset dynamically
-    if (expert) {
-        stopifnot(is.character(mode),        length(mode) == 1L)
-        stopifnot(is.character(resource_id), length(mode) == 1L)
+    if (expert && !is.null(parameters)) {
         # Manually create URL for API endpoint
         dataset <- list(url = paste(gs_baseurl(), "station", mode, resource_id, sep = "/"))
     } else {
         # Check if the combination is valid and what the URL is
-        dataset <- gs_datasets("station", version)
+        dataset <- gs_datasets(mode = mode, type = "station", version = version)
 
         # Sanity checks
         mode        <- match.arg(mode, unique(dataset$mode))
@@ -160,7 +164,7 @@ gs_stationdata <- function(mode, resource_id, parameters, start, end, station_id
         meta <- gs_metadata(mode, resource_id, version)
 
         # Checking parameters argument
-        stopifnot(is.character(parameters), length(parameters) >= 1)
+        if (is.null(parameters)) parameters <- meta$parameters$name
         idx <- which(!parameters %in% unique(meta$parameters$name))
         if (length(idx) > 0)
             stop(sprintf("Parameter%s ", ifelse(length(idx) > 1, "s", "")),
@@ -191,87 +195,101 @@ gs_stationdata <- function(mode, resource_id, parameters, start, end, station_id
     if (is.character(end))
        end <- if (is.null(format)) as.POSIXct(end) else as.POSIXct(end, format = format)
 
-    # Guessing number of elements to be retrieved and checking against the current
-    # limits of the API
-    if (limitcheck) {
-        nsecs  <- gs_temporal_interval(resource_id)
-        nsteps <- ceiling(as.double(end - start, units = "secs") / nsecs)
-        nguess <- length(station_ids) * nsteps * length(parameters)
-        if (verbose) message("Guessing number of elements to be retrieved\n",
-                             sprintf(" %d stations * %d timesteps (%d second interval) * %d parameter = %d",
-                                     length(station_ids), nsteps, nsecs, length(parameters), nguess))
-        if (tolower(format) == "netcdf" && nguess > 1e7) {
-            stop("Number of estimated data points/elements to be retrieved exceeds the limit of 1e7 (NetCDF format). Not sending request.")
-        } else if (nguess >= 1e6) {
-            stop("Number of estimated data points/elements to be retrieved exceeds the limit of 1e6. Not sending request.")
-        }
-    }
-
-    # Getting data
-    query <- list(parameters  = paste(parameters, collapse = ","),
-                  start       = format(start, "%Y-%m-%dT%H:%M"),
-                  end         = format(end, "%Y-%m-%dT%H:%M"),
-                  station_ids = paste(station_ids, collapse = ","))
-
-    if (verbose) {
-        tmp <- lapply(query, function(x) paste(as.character(x), collapse = ","))
-        tmp <- paste(names(tmp), unname(tmp), sep = "=", collapse = "&")
-        message("Full call: ", dataset$url, "?", tmp, "\n", sep = "")
-    }
-    req <- GET(dataset$url, query = query, config = config)
-    if (!status_code(req) == 200) {
-        tmp <- content(req)
-        if (is.list(tmp) && "message" %in% names(tmp) && grepl("timing out", tmp$message)) {
-            stop("Request most likely too big. Server responded with: ", tmp$message)
+    # To avoid running into the API data request limitation we calculate
+    # batches along the time axis. Will return a list of start/end date and time
+    # (one if only one is needed) used for the request later.
+    calc_batches <- function(resource_id, station_ids, parameters, start, end, limit) {
+        # Calculate number of expected data points for one single time steps
+        per_step  <- length(station_ids) * (length(parameters) + 1)
+        n_steps   <- ceiling(as.double(end - start, units = "secs") / gs_temporal_interval(resource_id))
+        n_total   <- n_steps * per_step
+        n_batches <- ceiling((n_steps * per_step) / limit)
+        if (n_batches == 1) {
+            res <- list(list(start = start, end = end))
         } else {
-            stop(tmp, "\nData request not successful (status code != 200)")
-        }
-    }
-
-    # Evaluate content
-    content <- content(req)
-    N     <- length(content$timestamps)
-    index <- as.POSIXct(unlist(content$timestamps), format = "%Y-%m-%dT%H:%M")
-
-    # Extracting data (lists)
-    final <- list()
-    for (rec in content$features) {
-        stn <- rec$properties$station
-        tmp <- lapply(rec$properties$parameters, function(x) sapply(x$data, function(y) ifelse(is.null(y), NA_real_, y)))
-        tmp <- tmp[sapply(tmp, function(x) sum(!is.na(x))) > 0]
-        final[[stn]] <- c(final[[stn]], tmp)
-    }
-
-    # convert to list of zoo objects.
-    # If there is only one station (length(stations_id) == 1)
-    # we only return a zoo, else list of zoo where the name of the list
-    # elements itself is the number of the station.
-    fn <- function(x, index) {
-        idx <- which(!sapply(x, is.null))
-        if (length(idx) == 0) {
-            warning("No observations provided for one station; returning NULL")
-            res <- NULL
-        } else {
-            res <- zoo(as.data.frame(x[idx]), unname(index))
+            tmp <- seq(start, end, length.out = n_batches + 1)
+            res <- list()
+            for (i in head(seq_len(n_batches + 1), -1)) {
+                res[[paste("batch", i, sep = "_")]] <- if (i == 1) list(start = tmp[i], end = tmp[i + 1]) else list(start = tmp[i] + 1, end = tmp[i + 1])
+            }
         }
         return(res)
     }
-    final <- lapply(final, fn, index = index)
 
-    # Extracting parameter info for attribute
+    # Calculating batches
+    batches <- calc_batches(resource_id, station_ids, parameters, start, end, limit)
+    if (verbose) message("Number of requests to be performed: ", length(batches))
+
+    # Extracting parameters from last batch
     get_param <- function(x) {
         tmp <- lapply(x$properties$parameters, function(x) data.frame(name = x$name, unit = x$unit))
         do.call(rbind, tmp)
     }
-    for (i in seq_along(final)) {
-	if (is.null(final[[i]])) next ## no data available
-        coord <- st_point(unlist(content$features[[i]]$geometry$coordinates))
-        id    <- as.integer(content$features[[i]]$properties$station)
-        attr(final[[i]], "station") <- list(id = id, coord = coord)
-        attr(final[[i]], "parameter") <- get_param(content$features[[i]])
-        class(final[[i]]) <- c("gs_stationdata", class(final[[i]]))
+
+    # Getting data
+    get_batch <- function(timeinfo) {
+        query <- list(parameters  = paste(parameters, collapse = ","),
+                      start       = format(timeinfo$start, "%Y-%m-%dT%H:%M"),
+                      end         = format(timeinfo$end,   "%Y-%m-%dT%H:%M"),
+                      station_ids = paste(station_ids, collapse = ","))
+    
+        if (verbose) {
+            tmp <- lapply(query, function(x) paste(as.character(x), collapse = ","))
+            tmp <- paste(names(tmp), unname(tmp), sep = "=", collapse = "&")
+            message("Calling: ", dataset$url, "?", tmp, sep = "")
+        }
+        req     <- GET(dataset$url, query = query, config = config)
+        content <- content(req)
+        if (!status_code(req) == 200) {
+            if (is.list(content) && "message" %in% names(content) && grepl("timing out", content$message)) {
+                stop("Request most likely too big. Server responded with: ", content$message)
+            } else {
+                stop(content, "\nData request not successful (status code != 200)")
+            }
+        }
+    
+        # Extracting data (lists)
+        final <- list()
+        for (rec in content$features) {
+            stn <- rec$properties$station
+            tmp <- lapply(rec$properties$parameters, function(x) sapply(x$data, function(y) ifelse(is.null(y), NA_real_, y)))
+            tmp <- tmp[sapply(tmp, function(x) sum(!is.na(x))) > 0]
+            final[[stn]] <- c(final[[stn]], tmp)
+            coord <- st_point(unlist(rec$geometry$coordinates))
+            id    <- as.integer(rec$properties$station)
+            attr(final[[stn]], "station") <- list(id = id, coord = coord)
+            attr(final[[stn]], "parameter") <- get_param(rec)
+        }
+    
+        # convert to list of zoo objects.
+        fn <- function(x, index) {
+            idx <- which(!sapply(x, is.null))
+            if (length(idx) == 0) {
+                warning("No observations provided for one station; returning NULL")
+                res <- NULL
+            } else {
+                res <- zoo(as.data.frame(x[idx]), unname(index))
+            }
+            # Keep attributes
+            for (n in c("parameter", "station")) attr(res, n) <- attr(x, n)
+            return(res)
+        }
+        return(lapply(final, fn, index = parse_iso_8601(content$timestamp)))
     }
-    return(if (length(station_ids) == 1) final[[1]] else final)
+    comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
+    data <- lapply(batches, get_batch)
+
+    # Combine (row-bind) data from all batches if there have been multiple
+    reto <<- data
+    res <- list()
+    for (s in as.character(station_ids)) {
+        res[[s]] <- do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
+        for (n in c("parameter", "station")) attr(res[[s]], n) <- attr(data[[1]][[s]], n)
+        class(res[[s]]) <- c("gs_stationdata", class(res[[s]]))
+    }
+
+    # Return
+    return(if (length(station_ids) == 1) res[[1]] else res)
 }
 
 
