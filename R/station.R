@@ -18,9 +18,11 @@
 #' @param limitcheck logical, defaults to \code{TRUE}. Will guess the number of elements
 #'        to be retrieved and stops if this exceeds the API limits; see 'Details'.
 #' @param version integer, API version (defaults to \code{1L}).
+#' @param verbose logical, if set \code{TRUE} some more output will be produced.
 #' @param format \code{NULL} (default) or character string, used if \code{start}/\code{end}
 #'        are characters in a specific (non ISO) format.
-#' @param verbose logical, if set \code{TRUE} some more output will be produced.
+#' @param config empty list by default; can be a named list to be fowrarded
+#'        to the \code{httr::GET} request if needed.
 #'
 #' @details This function is a convenience function for downloading different sets of
 #' station data from the ZAMG data hub (now Geosphere). The API may change and additional
@@ -128,7 +130,7 @@
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo
 gs_stationdata <- function(mode, resource_id, parameters, start, end, station_ids, expert = FALSE,
-                           limitcheck = TRUE, version = 1L, format = NULL, verbose = FALSE) {
+                           limitcheck = TRUE, version = 1L, verbose = FALSE, format = NULL, config = list()) {
 
     stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
@@ -216,7 +218,7 @@ gs_stationdata <- function(mode, resource_id, parameters, start, end, station_id
         tmp <- paste(names(tmp), unname(tmp), sep = "=", collapse = "&")
         message("Full call: ", dataset$url, "?", tmp, "\n", sep = "")
     }
-    req <- GET(dataset$url, query = query)
+    req <- GET(dataset$url, query = query, config = config)
     if (!status_code(req) == 200) {
         tmp <- content(req)
         if (is.list(tmp) && "message" %in% names(tmp) && grepl("timing out", tmp$message)) {

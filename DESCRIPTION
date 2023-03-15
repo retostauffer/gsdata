@@ -9,3 +9,4 @@ Depends: httr, zoo, sf
 Description: Small package to interface the Geosphere (ZAMG) web API to retrieve data. There are multiple data sets and not everything might be included yet; focusing on station data.
 License: GPL-2 | GPL-3
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

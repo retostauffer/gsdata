@@ -14,8 +14,9 @@ gs_stationdata(
   expert = FALSE,
   limitcheck = TRUE,
   version = 1L,
+  verbose = FALSE,
   format = NULL,
-  verbose = FALSE
+  config = list()
 )
 }
 \arguments{
@@ -40,10 +41,13 @@ to be retrieved and stops if this exceeds the API limits; see 'Details'.}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
 
+\item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
+
 \item{format}{\code{NULL} (default) or character string, used if \code{start}/\code{end}
 are characters in a specific (non ISO) format.}
 
-\item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
+\item{config}{empty list by default; can be a named list to be fowrarded
+to the \code{httr::GET} request if needed.}
 }
 \value{
 If only data for one single station (\code{length(station_ids) == 1}) is requested,
@@ -55,19 +59,19 @@ is available) is returned. The name of the list corresponds to the station id re
 }
 \description{
 Accessing the API endpoint \code{v<version>/station},
-see <https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html>.
+see \url{https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html}.
 }
 \details{
 This function is a convenience function for downloading different sets of
 station data from the ZAMG data hub (now Geosphere). The API may change and additional
-resources may be added, for details see <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets>.
+resources may be added, for details see \url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets}.
 
 To see what's available call \code{gs_datasets("station")}.
 
 The flag \code{limitcheck} guesses the number of elements to be retrieved as the API has a
 limit set. Trying to avoid to send a too large request and only waiting for the API to fail
 after a decent amount of time (limits exceeded). See
-<https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload>.
+\url{https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload}.
 }
 \examples{
 ######################################################################

@@ -4,7 +4,7 @@
 \alias{gs_metadata}
 \title{Downloading Dataset Meta Data}
 \usage{
-gs_metadata(mode, resource_id, version = 1L)
+gs_metadata(mode, resource_id, version = 1L, config = list(), verbose = FALSE)
 }
 \arguments{
 \item{mode}{character, specify mode of data.}
@@ -12,14 +12,56 @@ gs_metadata(mode, resource_id, version = 1L)
 \item{resource_id}{character, specify resource identifier of data.}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
+
+\item{config}{empty list by default; can be a named list to be fowrarded
+to the \code{httr::GET} request if needed.}
+
+\item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
 }
 \value{
-Named list with a series of information about the dataset
-including the URL called, available parameters with description and unit,
-available stations with unit etc.
+Named list with a series of information about the dataset.
+Most importantly this function returns information about the stations
+for which data is available as well as what parameters are available.
+Note that the availability of data depends on the station; the meta information
+only provides an overview of what is possibliy avialable.
+\itemize{
+\item \code{$stations}: an \code{sf} object (spatial feature data frame) containing information
+of all stations belonging to this dataset including geographical location,
+name, and \code{id} (the station identifier) wihch is used when retrieving
+data (see e.g., \code{gs_stationdata()}).
+\item \code{$parameters}: a \code{data.frame} containing the \code{name} of the parameters
+used when retrieving the data (see e.g., \code{gs_stationdata()}) as well as a
+parameter and description. Only available in German, tough.
+}
+
+In addition, the following information will be returned as separate entries in the list:
+\itemize{
+\item \code{$title}/\code{$id_type}: title/id type of the dataset
+\item \code{$frequency}: observation frequency/temporal interval
+(see also \code{gs_temporal_interval()})
+\item \code{$type}: data type (e.g., "station")
+\item \code{$mode}: data set mode (e.g., "historical")
+\item \code{$response_formats}: formats the API provides
+\item \code{$start_time}/\code{$end_time}: date/time range of availability of this data set
+\item \code{$url}: URL; origin of the data set
+}
 }
 \description{
 Downloading Dataset Meta Data
+}
+\examples{
+## Loading meta information for data set with
+## mode == "historical" and resource_id = "tawes-v1-10min"
+tawes <- gs_metadata("historical", "tawes-v1-10min")
+
+## Uses partial matching, thus this short form can be used in case
+## there is only one match (one specific data set). With verbose = TRUE
+## a message will tell which meta data set will be requested.
+synop <-  gs_metadata("hist", "synop", verbose = TRUE)
+
+## generic sf plotting; variable 'altitude'
+plot(synop$stations["altitude"], pch = 19, cex = 2)
+
 }
 \author{
 Reto Stauffer

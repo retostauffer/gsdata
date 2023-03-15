@@ -2,8 +2,11 @@
 
 #' Getting Available Datasets
 #'
-#' The Geosphere (ZAMG) datahub API provides an endpoint to get all
-#' available datasets. This function returns 
+#' The Geosphere (ZAMG) datahub API provides an endpoint to get available
+#' datasets. This function returns a (possibly pre-filtered) \code{data.frame}
+#' containing the dataset \code{type}, \code{mode} and \code{resource_id} needed
+#' to perform the data requests (see e.g., \code{gs_stationdata()}) amongst some
+#' additional information.
 #'
 #' @param type \code{NULL} or character of length \code{1} to filter the request.
 #' @param mode \code{NULL} or character of length \code{1} to filter the request.
@@ -13,7 +16,12 @@
 #' @param verbose logical, if set \code{TRUE} some more output will be produced.
 #'
 #' @return Returns a \code{data.frame} with all available data types and
-#' API endpoints.
+#' API endpoints. When both \code{type} and \code{mode} are equal to \code{NULL}
+#' all data available via the API will be returned.
+#' The most important information of this return is the \code{type}, \code{mode},
+#' as well as \code{resource_id} which is used to perform data requests.
+#'
+#' @seealso gs_stationdata
 #'
 #' @details
 #' The API provides an enpoint to get all available data sets which
