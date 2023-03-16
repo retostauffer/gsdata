@@ -21,10 +21,11 @@ Returns available data sets. Note that the current default is set to
 for downloading stationdata.
 
 ```{r}
-(ds <- gs_dataset())
+library("gsdata")
+(ds <- gs_datasets())
 ```
 
-The function `r gs_datasets()` returns a `data.frame` which includes
+The function `gs_datasets()` returns a `data.frame` which includes
 a series of information including:
 
 * `type`: data set type (currently defaults to `type = "station"`)

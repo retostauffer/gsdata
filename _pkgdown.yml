@@ -13,8 +13,7 @@ template:
 
 navbar:
   left:
-    - name: "Articles"
-    - title: "Articles"
+    - text: "Articles"
       menu:
         - text: "Datasets"
           href: articles/datasets.html
