@@ -3,6 +3,8 @@
 #'
 #' @param mode character, specify mode of data.
 #' @param resource_id character, specify resource identifier of data.
+#' @param type \code{NULL} or character. Only required if a data set
+#'        is available in more than one type (e.g., \"grid\" and \"timeseries\").
 #' @param version integer, API version (defaults to \code{1L}).
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
@@ -50,23 +52,36 @@
 #' @export
 #' @importFrom httr GET status_code content
 #' @importFrom sf st_as_sf
-gs_metadata <- function(mode, resource_id, version = 1L, config = list(), verbose = FALSE) {
+#' @importFrom parsedate parse_iso_8601
+gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = list(), verbose = FALSE) {
 
     # Getting available dataset dynamically; used to perform 'sanity check'
     # (whether or not the defined mode/resource_id is a valid identifier)
     stopifnot("argument 'mode' must be character of length 1" = is.character(mode) && length(mode) == 1)
     stopifnot("argument 'resource_id' must be character of length 1" = is.character(resource_id) && length(resource_id) == 1)
+    stopifnot("argument 'type' must be NULL or character of length 1" = is.null(type) || (is.character(type) && length(type) == 1L))
     stopifnot("argument 'verbose' must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
 
     dataset     <- gs_datasets(version = version)
     mode        <- match.arg(mode, unique(dataset$mode))
     resource_id <- match.arg(resource_id, unique(dataset$resource_id))
+    if (!is.null(type)) type <- match.arg(type, unique(dataset$type))
 
     # Checking available resource ids. Enforcing one of the types defined below
     dataset <- dataset[dataset$mode == mode & dataset$resource_id == resource_id, ]
-    if (NROW(dataset) != 1)
+    if (!is.null(type)) dataset <- dataset[dataset$type == type, ]
+
+    # More than one match?
+    if (nrow(dataset) > 1L && is.null(type)) {
+        stop("Found ", nrow(dataset), " datasets matching the input arguments. ",
+             "Please specify the 'type' argument.")
+    }
+    if (nrow(dataset) == 0) {
         stop("Could not find data set for station with mode = \"", mode, "\" ",
-             "and resource_id = \"", resource_id, "\"", sep = "")
+             "and resource_id = \"", resource_id, "\" and type = \"", type, "\"", sep = "")
+    } else if (nrow(dataset) > 1) {
+        stop("Multiple matches; should not happen!")
+    }
     dataset <- as.list(dataset)
 
     # Downloading meta data

@@ -1,0 +1,39 @@
+---
+title: "Datasets"
+author: "Reto Stauffer"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+link-citations: true
+vignette: >
+  %\VignetteIndexEntry{annex: Annex86 Data Analysis Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{Formula}
+  %\VignetteKeywords{Annex86}
+  %\VignettePackage{annex}
+---
+
+
+Returns available data sets. Note that the current default is set to
+`type = "station"` (see `gs_datasets()`) as this package only allows
+for downloading stationdata.
+
+```{r}
+(ds <- gs_dataset())
+```
+
+The function `r gs_datasets()` returns a `data.frame` which includes
+a series of information including:
+
+* `type`: data set type (currently defaults to `type = "station"`)
+* `mode`: historical or current (latest available observation)
+* `resource_id`: ID/name of the dataset or resource
+* ... and some more
+
+Most important are `type`, `mode` and `resource_id` which allow
+to download additional meta data (see `gs_metadata()`) as well
+as the data itself (see `gs_stationdata()`).
+
+

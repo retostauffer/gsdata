@@ -4,12 +4,22 @@
 \alias{gs_metadata}
 \title{Downloading Dataset Meta Data}
 \usage{
-gs_metadata(mode, resource_id, version = 1L, config = list(), verbose = FALSE)
+gs_metadata(
+  mode,
+  resource_id,
+  type = NULL,
+  version = 1L,
+  config = list(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{mode}{character, specify mode of data.}
 
 \item{resource_id}{character, specify resource identifier of data.}
+
+\item{type}{\code{NULL} or character. Only required if a data set
+is available in more than one type (e.g., \"grid\" and \"timeseries\").}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
 

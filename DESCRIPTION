@@ -3,10 +3,13 @@ Type: Package
 Title: Accessing Data from Geosphere (ZAMG)
 Version: 0.0-1
 Date: 2023-02-02
-Author: Reto Stauffer
+Authors@R: 
+    person(given = "Reto", family = "Stauffer", role = c("cre", "aut"),
+         email = "reto.stauffer@uibk.ac.at",
+         comment = c(ORCID = "0000-0002-3798-5507"))
 Maintainer: Reto Stauffer <reto.stauffer@uibk.ac.at>
 Depends: httr, zoo, sf, parsedate
-Description: Small package to interface the Geosphere (ZAMG) web API to retrieve data. There are multiple data sets and not everything might be included yet; focusing on station data.
+Description: Package to download data from the Geosphere data hub (formerly known as ZAMG; Austrian National Weather Service).  Currently solely allows to download station data (no gridded data). More details about the data sets can be found on <https://data.hub.zamg.ac.at/> as well as in the API documentation available via <https://dataset.api.hub.zamg.ac.at/v1/docs/?anonymous=true>.
 License: GPL-2 | GPL-3
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)

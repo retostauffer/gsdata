@@ -65,8 +65,7 @@
 #'                             start       = "2020-01-01",
 #'                             end         = "2020-01-03",
 #'                             parameters  = c("T", "Td", "ff"),
-#'                             station_ids = 11330,
-#'                             expert      = TRUE)
+#'                             station_ids = 11330, verbose = TRUE)
 #'
 #' library("zoo")
 #' plot(mayrhofen, screen = c(1, 1, 2), col = c(2, 3, 4))
@@ -110,7 +109,8 @@
 #'                           start       = "1854-01-01",
 #'                           end         = "2022-01-01",
 #'                           parameters  = c("R01", "T01"),
-#'                           station_ids = 23)
+#'                           station_ids = 23,
+#'                           expert      = TRUE)
 #' plot(bregenz, col = c(4, 2))
 #'
 #' ######################################################################
@@ -128,10 +128,11 @@
 #'
 #' @author Reto Stauffer
 #' @export
+#' @importFrom utils head tail
 #' @importFrom sf st_point
 #' @importFrom parsedate parse_iso_8601
 #' @importFrom httr GET status_code content
-#' @importFrom zoo zoo
+#' @importFrom zoo zoo index
 gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, station_ids, expert = FALSE,
                            version = 1L, verbose = FALSE, format = NULL, limit = 1e7, config = list()) {
 
@@ -142,8 +143,21 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
 
     stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
+
+    # These cause an API error and will be excluded from the get-all-parameters
+    # requests and a warning will be thrown if the user specifies them manually
+    parameters_to_ignore = c("corr", "rest")
+
     # Getting available dataset dynamically
     if (expert && !is.null(parameters)) {
+        if (any(parameters %in% parameters_to_ignore)) {
+            idx <- which(parameters_to_ignore %in% parameters)
+            warning("WARNING: You have specified to retrieve parameter(s) ",
+                    paste(sprintf("\"%s\"", parameters_to_ignore[idx]), collapse = ", "), " ",
+                    "which may likely cause an error (API error; not float). ",
+                    "If so, try to not retrieve either of: ",
+                    paste(sprintf("\"%s\"", parameters_to_ignore), collapse = ", "))
+        }
         # Manually create URL for API endpoint
         dataset <- list(url = paste(gs_baseurl(), "station", mode, resource_id, sep = "/"))
     } else {
@@ -161,10 +175,10 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
         dataset <- as.list(dataset[idx, ])
 
         # Loading meta data
-        meta <- gs_metadata(mode, resource_id, version)
+        meta <- gs_metadata(mode, resource_id, version = version)
 
         # Checking parameters argument
-        if (is.null(parameters)) parameters <- meta$parameters$name
+        if (is.null(parameters)) parameters <- meta$parameters$name[!meta$parameters$name %in% parameters_to_ignore]
         idx <- which(!parameters %in% unique(meta$parameters$name))
         if (length(idx) > 0)
             stop(sprintf("Parameter%s ", ifelse(length(idx) > 1, "s", "")),
@@ -249,43 +263,53 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
         }
     
         # Extracting data (lists)
-        final <- list()
+        final      <- list() # To store data
+        attributes <- list() # Store additional information:w
+
         for (rec in content$features) {
             stn <- rec$properties$station
             tmp <- lapply(rec$properties$parameters, function(x) sapply(x$data, function(y) ifelse(is.null(y), NA_real_, y)))
             tmp <- tmp[sapply(tmp, function(x) sum(!is.na(x))) > 0]
             final[[stn]] <- c(final[[stn]], tmp)
+            # Keep attributes
             coord <- st_point(unlist(rec$geometry$coordinates))
             id    <- as.integer(rec$properties$station)
-            attr(final[[stn]], "station") <- list(id = id, coord = coord)
-            attr(final[[stn]], "parameter") <- get_param(rec)
+            attributes[[stn]] <- list(station = list(id = id, coord = coord),
+                                      parameter = get_param(rec))
         }
     
         # convert to list of zoo objects.
         fn <- function(x, index) {
             idx <- which(!sapply(x, is.null))
-            if (length(idx) == 0) {
-                warning("No observations provided for one station; returning NULL")
-                res <- NULL
-            } else {
-                res <- zoo(as.data.frame(x[idx]), unname(index))
-            }
+            res <- if (length(idx) == 0) NULL else zoo(as.data.frame(x[idx]), unname(index))
             # Keep attributes
             for (n in c("parameter", "station")) attr(res, n) <- attr(x, n)
             return(res)
         }
-        return(lapply(final, fn, index = parse_iso_8601(content$timestamp)))
+        return(list(attributes   = attributes,
+                    observations = lapply(final, fn, index = parse_iso_8601(content$timestamp))))
     }
     comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
     data <- lapply(batches, get_batch)
 
     # Combine (row-bind) data from all batches if there have been multiple
-    reto <<- data
     res <- list()
     for (s in as.character(station_ids)) {
-        res[[s]] <- do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
-        for (n in c("parameter", "station")) attr(res[[s]], n) <- attr(data[[1]][[s]], n)
-        class(res[[s]]) <- c("gs_stationdata", class(res[[s]]))
+        res[[s]] <- do.call(rbind, lapply(data, function(x, s) x$observations[[s]], s = s))
+        # Convert index to Date if all observations belong to 00:00
+        if (!is.null(res[[s]])) {
+            if (all(format(index(res[[s]]), "%H%M") == "0000"))
+                index(res[[s]]) <- as.Date(index(res[[s]]))
+            # Appending attributes; take them from the first batch;
+            # must/should be the same in all batches (if there are multiple)
+            for (n in names(data[[1]]$attributes[[s]]))
+                attr(res[[s]], n) <- data[[1]]$attributes[[s]][[n]]
+            # Appending new class
+            class(res[[s]]) <- c("gs_stationdata", class(res[[s]]))
+        } else {
+            warning("no observations available for station ", s, "; returning NA")
+            res[[s]] <- NA
+        }
     }
 
     # Return

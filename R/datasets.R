@@ -10,6 +10,7 @@
 #'
 #' @param type \code{NULL} or character of length \code{1} to filter the request.
 #' @param mode \code{NULL} or character of length \code{1} to filter the request.
+#'        Currently defaults to \code{mode = "station"}.
 #' @param version integer, API version (defaults to 1).
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
@@ -39,7 +40,7 @@
 #' @importFrom httr GET content status_code
 #' @author Reto Stauffer
 #' @export
-gs_datasets <- function(type = NULL, mode = NULL, version = 1L, config = list(), verbose = FALSE) {
+gs_datasets <- function(type = "station", mode = NULL, version = 1L, config = list(), verbose = FALSE) {
     stopifnot("argument 'verbose' must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
     stopifnot("argument 'config' must be a (named) list" = is.list(config))
     stopifnot("argument 'type' must be NULL or a character string" = is.null(type) || (is.character(type) & length(type) == 1L))

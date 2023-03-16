@@ -1,1 +1,4 @@
+
 ^Makefile$
+^_pkgdown.yml$
+^docs$

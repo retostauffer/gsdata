@@ -8,6 +8,10 @@
 document:
 	Rscript -e "devtools::document()"
 
+.PHONY: docs
+docs:
+	Rscript -e "pkgdown::build_site()"
+
 install: document
 	Rscript -e "devtools::install()"
 

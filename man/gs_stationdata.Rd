@@ -96,8 +96,7 @@ mayrhofen <- gs_stationdata(mode        = "historical",
                             start       = "2020-01-01",
                             end         = "2020-01-03",
                             parameters  = c("T", "Td", "ff"),
-                            station_ids = 11330,
-                            expert      = TRUE)
+                            station_ids = 11330, verbose = TRUE)
 
 library("zoo")
 plot(mayrhofen, screen = c(1, 1, 2), col = c(2, 3, 4))
@@ -141,7 +140,8 @@ bregenz <- gs_stationdata(mode        = "historical",
                           start       = "1854-01-01",
                           end         = "2022-01-01",
                           parameters  = c("R01", "T01"),
-                          station_ids = 23)
+                          station_ids = 23,
+                          expert      = TRUE)
 plot(bregenz, col = c(4, 2))
 
 ######################################################################

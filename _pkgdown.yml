@@ -1,0 +1,25 @@
+
+url: "https://retostauffer.github.io/gsdata"
+destination: "docs"
+
+template:
+  bootstrap: 5
+  assets: "pkgdown/assets/"
+
+#home:
+#  links:
+#    - text: Start discussion
+#      href: https://github.com/IEA-EBC-Annex86/annex/discussions
+
+navbar:
+  left:
+    - name: "Articles"
+    - title: "Articles"
+      menu:
+        - text: "Datasets"
+          href: articles/datasets.html
+        - text: "Metadata"
+          href: articles/metadata.html
+        - text: "Stationdata"
+          href: articles/stationdata.html
+

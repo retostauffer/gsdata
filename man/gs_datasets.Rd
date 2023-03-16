@@ -5,7 +5,7 @@
 \title{Getting Available Datasets}
 \usage{
 gs_datasets(
-  type = NULL,
+  type = "station",
   mode = NULL,
   version = 1L,
   config = list(),
@@ -15,7 +15,8 @@ gs_datasets(
 \arguments{
 \item{type}{\code{NULL} or character of length \code{1} to filter the request.}
 
-\item{mode}{\code{NULL} or character of length \code{1} to filter the request.}
+\item{mode}{\code{NULL} or character of length \code{1} to filter the request.
+Currently defaults to \code{mode = "station"}.}
 
 \item{version}{integer, API version (defaults to 1).}
 
