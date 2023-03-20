@@ -15,6 +15,9 @@ vignette: >
   %\VignettePackage{annex}
 ---
 
+```{r, include = FALSE}
+library("gsdata")
+```
 
 Returns available data sets. Note that the current default is set to
 `type = "station"` (see `gs_datasets()`) as this package only allows

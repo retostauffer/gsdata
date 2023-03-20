@@ -1,14 +1,16 @@
 
 
 
-# Purpose
+<!--<img src="man/figures/logo.png" align="right" height="200" style="float:right; height:200px;">-->
+
+## Purpose
 
 Interfacing the [Geosphere Austria Data Hub](https://data.hub.zamg.ac.at/)
 (formerly known as ZAMG; Austrian national weather service).
 Their API provides a series of publicly available meteorological/climatological data sets.
 Currently, this package only allows to download stationdata (no gridded/spatial data).
 
-# Installation
+## Installation
 
 This package is available via [github](https://github.com/retostauffer/gsdata).
 The simplest way to install is to use [`remotes`](https://cran.r-project.org/package=remotes)
@@ -25,7 +27,7 @@ additional libraries to be installed on your system (geos, proj4).
 For details please read the installation instructions on
 <https://r-spatial.github.io/sf/>.
 
-### Dependencies
+#### Dependencies
 
 The package depends on:
 

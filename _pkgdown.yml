@@ -4,6 +4,8 @@ destination: "docs"
 
 template:
   bootstrap: 5
+  bslib:
+    primary: "#97d24e"
   assets: "pkgdown/assets/"
 
 #home:
@@ -21,4 +23,15 @@ navbar:
           href: articles/metadata.html
         - text: "Stationdata"
           href: articles/stationdata.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
+    - text: "Contact"
+      href: contact.html
 
+references:
+  - title: "Reference"
+    desc: Function reference
+    contents: 
+    - matches(".*")

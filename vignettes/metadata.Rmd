@@ -15,5 +15,65 @@ vignette: >
   %\VignettePackage{annex}
 ---
 
+```{r, include = FALSE}
+library("gsdata")
+```
 
-template
+Given `mode` and the `resource_id` are known (see `gs_datasets()`)
+the function `gs_metadata()` allows to retrieve meta information which provides
+which stations and parameters are available for this specific data set.
+
+```{r}
+library("gsdata")
+
+# Meta information for historical hourly synop observations
+meta <- gs_metadata(mode = "historical", resource_id = "synop-v1-1h")
+```
+
+The function returns a named list with a series of information about
+the data set (e.g., `title`, `frequency`, `type`, ...) alongside
+with two elements `stations` and `parameters` explained in this article
+in more detail.
+
+## Station information
+
+Element `stations` is an object of class `r deparse(class(meta$station))`
+containing information about available stations for this data set.
+This includes the `name` of the station, the geographical location
+(`state`, `altitude`, and coordinates) as well as the station `id`
+which is required when retrieving data (see `gs_stationdata()`).
+
+In addition, the object provides information about the time period
+data is available (`valid_from`, `valid_to`) and whether or not the
+station `is_active`.
+
+
+```{r, fig = TRUE, fig.width = 8, fig.height = 4}
+plot(meta$station["altitude"],
+     main = "Station location and altitude",
+     pch = 19, cex = 1)
+plot(meta$station["is_active"],
+     main = "Station status (active/inactive)",
+     col = ifelse(meta$station$is_active, "#089392", "#CF597E"),
+     pch = ifelse(meta$station$is_active, 19, 17),
+     cex = 1)
+```
+
+## Parameter information
+
+Element `parameters` provides a list of all available parameters for this
+data set. Alongside with the `name` which is required to retrieve data
+(see `gs_stationdata()`) his `data.frame` also contains a description as well
+as the unit of the measurements. This is, however, only available in German.
+
+```{r}
+head(meta$parameters, n = 3)
+```
+
+Please note that not all stations will provide measurements for all parameters.
+
+
+
+
+
+

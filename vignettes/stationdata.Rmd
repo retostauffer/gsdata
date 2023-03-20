@@ -17,7 +17,205 @@ vignette: >
 
 ```{r setup, include = FALSE}
 suppressPackageStartupMessages(library('zoo'))
+library("gsdata")
+```
+
+This article contains a series of examples on how to retrieve
+station observations for different data sets. There is a limit
+on how many data can be retrieved via the API in one single call
+which is taken care by the function `gs_stationdata()`. If the
+number of expected data exceeds the limit, the function will
+automatically split thre request in multiple calls. Some
+information about that is shown when the argument `verbose` is
+set to `TRUE` (`FALSE` by default).
+
+More information about the data sets can be found on the
+[Geosphere Austria/ZAMG Data hub website](https://data.hub.zamg.ac.at/group/stationsdaten).
+
+
+# Hourly synop observations
+
+## Synop, 1 station, 3 parameters
+
+* Dataset: historical hourly synop observations
+* Ten consecutive days 2020
+* Parameters: three parameters only
+* Stations: single station, `11330` Mayrhofen
+
+```{r}
+mayrhofen <- gs_stationdata(mode        = "historical",
+                            resource_id = "synop-v1-1h",
+                            start       = "2022-01-01",
+                            end         = "2022-01-11",
+                            parameters  = c("T", "Td", "ff"),
+                            station_ids = 11330)
+
+# zoo object
+head(mayrhofen)
+
+# simple zoo plot
+plot(mayrhofen,
+     screen = c(1, 1, 2),
+     col    = c(2, 3, 4),
+     ylab   = c("air temperature [C]\nwelt bulb temperature [C]",
+                "mean wind speed [m/s]"))
+```
+
+As `expert = TRUE` (default) the function will internally download the meta information
+calling `gs_metadata()` to check if both arguments provided `station_ids` and `parameters`
+are valid (i.e., the station and the parameters are valid for this specific data set).
+
+This can be disabled using `expert = FALSE` which prevents these internal checks and
+save some time - but may result in API request errors if the station(s) or parameter(s)
+do not exist.
+
+One can, of course, get the meta information for the station and parameters
+if needed (see `gs_metdatata()` for more details):
+
+
+```{r}
+meta <- gs_metadata(mode = "historical", resource_id = "synop-v1-1h")
+subset(meta$stations, id == 11330)
+subset(meta$parameters, name %in% c("T", "Td", "ff"))
+```
+
+### Synop, multiple stations, all parameters
+
+* Dataset: historical hourly synop observations
+* Ten consecutive days 2020
+* Parameters: all available parameters (uses `parameters = NULL`; default)
+* Stations: three different stations
+
+The function allows to retrieve data for multiple stations at once and to
+download all avialable parameters by not specifying `parameters` (uses `parameters = NULL`).
+This will return all avialable data for each of the stations in a named list, where
+the names of the elements correspond to the station `id`.
+
+```{r}
+x <- gs_stationdata(mode        = "historical",
+                    resource_id = "synop-v1-1h",
+                    start       = "2020-01-01",
+                    end         = "2020-01-11",
+                    station_ids = c(11330, 11328, 11120),
+                    expert      = TRUE)
+class(x)
+names(x)
+```
+
+`expert = TRUE` skips the internal check whether or not the `station_ids` given
+are valid (i.e., if they even exist for this data set).
+
+Note that station `11328` does not provide any data for the time period specified resulting
+in a warning and an will return a missing value (`NA`).
+
+```{r}
+x[["11328"]]
+is.na(x[["11328"]])
+```
+
+The other two elements of the list again contain objects of class 
+`r deparse(class(x[[1]]))`:
+
+```{r}
+lapply(x[c("11330", "11120")], class)
+lapply(x[c("11330", "11120")], head, n = 2)
+```
+
+The API, however, provides different data for the other two stations as these
+two stations do not provide the data for the very same parameters.  Parameters
+not providing any data will not be included in the return.
+
+```{r, plot = TRUE, fig.width = 12, fig.height = 10}
+lapply(x[c("11330", "11120")], dim)
+# Default plots
+plot(x[["11330"]], nc = 3, col = "steelblue", type = "o", pch = 4)
+plot(x[["11120"]], nc = 3, col = "steelblue", type = "o", pch = 4)
 ```
 
 
-template
+# TAWES data
+
+TAWES stands for "teilautomatische Wetterstation" and provides data
+on a 10 minute temporal resolution. Requesting data for TAWES stations
+works the very same way as for synop stations as shown above, however,
+the set of avialble stations and parameters is different (names of the
+parameters differ).
+
+To get information about all available stations and parameters call:
+
+```{r}
+meta <- gs_metadata("historical", "tawes-v1-10min")
+```
+
+... and check the vignette [Metadata](articles/metadata.html) for more
+information on the return.
+
+
+## TAWES, 1 station, 4 
+
+* Dataset: historical TAWES observations, 10min temporal resolution
+* January 2023 (31 consecutive days)
+* Parameters: four predefined parameters
+* Stations: single station, `11121` Innsbruck Airport
+
+```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+uibk <-  gs_stationdata(mode        = "historical",
+                        resource_id = "tawes-v1-10min",
+                        start       = "2023-01-01",
+                        end         = "2023-02-01",
+                        parameters  = c("TL", "TP", "FFAM", "FFX"),
+                        station_ids = 11121,
+                        expert      = TRUE)
+plot(uibk,
+     screens = c(1, 1, 2, 2),
+     col = c(2, 3, 4, 8),
+     ylab = c("temperature\nand dewpoint", "mean wind\nand gusts"))
+```
+
+# Histalp
+
+## Histalp annual data, 1 station, 2 parameters
+
+* Dataset: historical histalp records; annual observations
+* 1845 to 2022
+* Parameters: precipitation and temperature (annual)
+* Stations: single station, `23` Bregenz
+
+```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+meta <- gs_metadata("historical", "histalp-v1-1y")
+bregenz <- gs_stationdata(mode        = "historical",
+                          resource_id = "histalp-v1-1y",
+                          start       = "1854-01-01",
+                          end         = "2022-01-01",
+                          parameters  = c("R01", "T01"),
+                          station_ids = 23,
+                          expert      = TRUE)
+
+plot(bregenz, col = c(4, 2))
+```
+
+# Klima
+
+## Daily climate records, 1 stations, 3 parameters
+
+* Dataset: historical climate recoreds; daily temporal resolution
+* Summer 2020 till the end of 2022 (2.5 years)
+* Parameters: three distinct parameters (precipitation and snow height)
+* Stations: single station, `8807` Achenkirch
+
+```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+meta <- gs_metadata("historical", "klima-v1-1d")
+achenkirch <- gs_stationdata(mode        = "historical",
+                             resource_id = "klima-v1-1d",
+                             start       = "2020-06-01",
+                             end         = "2022-12-31",
+                             parameters  = c("nied", "nied07", "schnee"),
+                             station_ids = 8807,
+                             expert      = TRUE)
+head(achenkirch)
+plot(achenkirch, type = "h")
+```
+
+
+
+
