@@ -15,7 +15,7 @@ gs_stationdata(
   version = 1L,
   verbose = FALSE,
   format = NULL,
-  limit = 1e+07,
+  limit = 5e+05,
   config = list()
 )
 }

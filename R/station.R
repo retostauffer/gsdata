@@ -236,7 +236,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
 
     # Calculating batches
     batches <- calc_batches(resource_id, station_ids, parameters, start, end, limit, verbose)
-    if (verbose) message("Number of requests to be performed: ", length(batches))
+    if (verbose) message("Number of requests to be performed: ", length(batches), " (limit set to ", limit, ")", sep = "")
 
     # Extracting parameters from last batch
     get_param <- function(x) {
@@ -290,8 +290,9 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
             for (n in c("parameter", "station")) attr(res, n) <- attr(x, n)
             return(res)
         }
+        observations <- lapply(final, fn, index = parse_iso_8601(content$timestamp))
         return(list(attributes   = attributes,
-                    observations = lapply(final, fn, index = parse_iso_8601(content$timestamp))))
+                    observations = observations))
     }
     comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
     data <- lapply(batches, get_batch)
