@@ -134,7 +134,7 @@
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo index
 gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, station_ids, expert = FALSE,
-                           version = 1L, verbose = FALSE, format = NULL, limit = 1e7, config = list()) {
+                           version = 1L, verbose = FALSE, format = NULL, limit = 5e5, config = list()) {
 
     stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
     stopifnot("argument 'mode' must be character of length 1" = is.character(resource_id) & length(mode) == 1L)
@@ -201,22 +201,26 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
     }
 
     # Forcing start/end date to POSIXt/Date
-    stopifnot(inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
-    stopifnot(inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
+    stopifnot("argument 'start' of wrong type" = inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
+    stopifnot("argument 'end' of wrong type"   = inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
+
     stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
     if (is.character(start))
        start <- if (is.null(format)) as.POSIXct(start) else as.POSIXct(start, format = format)
     if (is.character(end))
        end <- if (is.null(format)) as.POSIXct(end) else as.POSIXct(end, format = format)
+    stopifnot("end date must be greater than start date" = end > start)
 
     # To avoid running into the API data request limitation we calculate
     # batches along the time axis. Will return a list of start/end date and time
     # (one if only one is needed) used for the request later.
-    calc_batches <- function(resource_id, station_ids, parameters, start, end, limit) {
+    calc_batches <- function(resource_id, station_ids, parameters, start, end, limit, verbose) {
         # Calculate number of expected data points for one single time steps
         per_step  <- length(station_ids) * (length(parameters) + 1)
         n_steps   <- ceiling(as.double(end - start, units = "secs") / gs_temporal_interval(resource_id))
         n_total   <- n_steps * per_step
+        if (verbose) message(sprintf("Estimated number of elements to be retrieved: %d (%d x %d x %d)",
+                                     n_total, length(station_ids), length(parameters), n_steps))
         n_batches <- ceiling((n_steps * per_step) / limit)
         if (n_batches == 1) {
             res <- list(list(start = start, end = end))
@@ -231,7 +235,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
     }
 
     # Calculating batches
-    batches <- calc_batches(resource_id, station_ids, parameters, start, end, limit)
+    batches <- calc_batches(resource_id, station_ids, parameters, start, end, limit, verbose)
     if (verbose) message("Number of requests to be performed: ", length(batches))
 
     # Extracting parameters from last batch
