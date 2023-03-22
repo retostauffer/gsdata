@@ -83,8 +83,46 @@
 #' is.null(x[["11328"]])
 #' plot(x[["11120"]], screen = c(1, 1, 2), col = c(2, 3, 4))
 #'
+#'
+#' ######################################################################
+#' ## Example for daily climatological records
+#' meta <- gs_metadata("historical", "klima-v1-1d")
+#' achenkirch <- gs_stationdata(mode        = "historical",
+#'                              resource_id = "klima-v1-1d",
+#'                              start       = "2020-06-01",
+#'                              end         = "2022-12-31",
+#'                              parameters  = c("nied", "nied07", "nied19", "sonne"),
+#'                              station_ids = 8807,
+#'                              expert      = TRUE)
+#' head(achenkirch)
+#' plot(achenkirch, type = "h")
+#'
+#'
+#' ######################################################################
+#' ## Example for 10min KLIMA data
+#' # meta$parameter contains available parameters,
+#' # meta$stations  available stations
+#' meta <- gs_metadata("historical", "klima-v1-10min")
+#' uibk <-  gs_stationdata(mode        = "historical",
+#'                         resource_id = "klima-v1-10min",
+#'                         start       = "2010-11-01",
+#'                         end         = "2011-02-01",
+#'                         parameters  = c("TL", "FFAM", "FFX"),
+#'                         station_ids = 11803,
+#'                         expert      = TRUE)
+#' plot(uibk,
+#'      screens = c(1, 2, 2),
+#'      col = c(2, 4, 8),
+#'      ylab = c("temperature", "mean wind\nand gusts"))
+#' 
+#'
 #' ######################################################################
 #' ## Example for 10min TAWES data
+#' ## NOTE/WARNING:
+#' ##   ! "tawes" is not quality controlled and provides limited
+#' ##   ! amount of data. Consider to use the "klima-v1-10min" data set which
+#' ##   ! provides long-term historical data for the same stations and temporal
+#' ##   ! interval (see above).
 #' # meta$parameter contains available parameters,
 #' # meta$stations  available stations
 #' meta <- gs_metadata("historical", "tawes-v1-10min")
@@ -112,19 +150,6 @@
 #'                           station_ids = 23,
 #'                           expert      = TRUE)
 #' plot(bregenz, col = c(4, 2))
-#'
-#' ######################################################################
-#' ## Example for daily climatological records
-#' meta <- gs_metadata("historical", "klima-v1-1d")
-#' achenkirch <- gs_stationdata(mode        = "historical",
-#'                              resource_id = "klima-v1-1d",
-#'                              start       = "2020-06-01",
-#'                              end         = "2022-12-31",
-#'                              parameters  = c("nied", "nied07", "nied19", "sonne"),
-#'                              station_ids = 8807,
-#'                              expert      = TRUE)
-#' head(achenkirch)
-#' plot(achenkirch, type = "h")
 #'
 #' @author Reto Stauffer
 #' @export

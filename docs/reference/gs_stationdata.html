@@ -12,7 +12,7 @@ see https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html."><meta property=
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ see <a href="https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html" class="
 <span>  version <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">1e+07</span>,</span>
+<span>  limit <span class="op">=</span> <span class="fl">5e+05</span>,</span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -228,7 +228,8 @@ For current limits see
 <span class="r-in"><span>                            end         <span class="op">=</span> <span class="st">"2020-01-03"</span>,</span></span>
 <span class="r-in"><span>                            parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T"</span>, <span class="st">"Td"</span>, <span class="st">"ff"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                            station_ids <span class="op">=</span> <span class="fl">11330</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Number of requests to be performed: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimated number of elements to be retrieved: 192 (1 x 3 x 48)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Number of requests to be performed: 1 (limit set to 5e+05)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calling: https://dataset.api.hub.zamg.ac.at/v1/station/historical/synop-v1-1h?parameters=T,Td,ff&amp;start=2020-01-01T00:00&amp;end=2020-01-03T00:00&amp;station_ids=11330</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span></span>
@@ -251,8 +252,55 @@ For current limits see
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11120"</span><span class="op">]</span><span class="op">]</span>, screen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gs_stationdata-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">######################################################################</span></span></span>
+<span class="r-in"><span><span class="co">## Example for daily climatological records</span></span></span>
+<span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-1d"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">achenkirch</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
+<span class="r-in"><span>                             resource_id <span class="op">=</span> <span class="st">"klima-v1-1d"</span>,</span></span>
+<span class="r-in"><span>                             start       <span class="op">=</span> <span class="st">"2020-06-01"</span>,</span></span>
+<span class="r-in"><span>                             end         <span class="op">=</span> <span class="st">"2022-12-31"</span>,</span></span>
+<span class="r-in"><span>                             parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nied"</span>, <span class="st">"nied07"</span>, <span class="st">"nied19"</span>, <span class="st">"sonne"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             station_ids <span class="op">=</span> <span class="fl">8807</span>,</span></span>
+<span class="r-in"><span>                             expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">achenkirch</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            nied nied07 nied19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-01 -1.0     NA     -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-02 -1.0   -1.0     -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-03  4.2   -1.0     -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-04  8.2    4.2     -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-05  0.1    8.2     -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-06  6.7    0.1     -1</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">achenkirch</span>, type <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="gs_stationdata-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">######################################################################</span></span></span>
+<span class="r-in"><span><span class="co">## Example for 10min KLIMA data</span></span></span>
+<span class="r-in"><span><span class="co"># meta$parameter contains available parameters,</span></span></span>
+<span class="r-in"><span><span class="co"># meta$stations  available stations</span></span></span>
+<span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-10min"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
+<span class="r-in"><span>                        resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span></span>
+<span class="r-in"><span>                        start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span></span>
+<span class="r-in"><span>                        end         <span class="op">=</span> <span class="st">"2011-02-01"</span>,</span></span>
+<span class="r-in"><span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                        station_ids <span class="op">=</span> <span class="fl">11803</span>,</span></span>
+<span class="r-in"><span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span></span>
+<span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
 <span class="r-in"><span><span class="co">## Example for 10min TAWES data</span></span></span>
+<span class="r-in"><span><span class="co">## NOTE/WARNING:</span></span></span>
+<span class="r-in"><span><span class="co">##   ! "tawes" is not quality controlled and provides limited</span></span></span>
+<span class="r-in"><span><span class="co">##   ! amount of data. Consider to use the "klima-v1-10min" data set which</span></span></span>
+<span class="r-in"><span><span class="co">##   ! provides long-term historical data for the same stations and temporal</span></span></span>
+<span class="r-in"><span><span class="co">##   ! interval (see above).</span></span></span>
 <span class="r-in"><span><span class="co"># meta$parameter contains available parameters,</span></span></span>
 <span class="r-in"><span><span class="co"># meta$stations  available stations</span></span></span>
 <span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"tawes-v1-10min"</span><span class="op">)</span></span></span>
@@ -268,7 +316,7 @@ For current limits see
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature\nand dewpoint"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
-<span class="r-plt img"><img src="gs_stationdata-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="gs_stationdata-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
@@ -349,28 +397,7 @@ For current limits see
 <span class="r-in"><span>                          station_ids <span class="op">=</span> <span class="fl">23</span>,</span></span>
 <span class="r-in"><span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bregenz</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">######################################################################</span></span></span>
-<span class="r-in"><span><span class="co">## Example for daily climatological records</span></span></span>
-<span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-1d"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">achenkirch</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
-<span class="r-in"><span>                             resource_id <span class="op">=</span> <span class="st">"klima-v1-1d"</span>,</span></span>
-<span class="r-in"><span>                             start       <span class="op">=</span> <span class="st">"2020-06-01"</span>,</span></span>
-<span class="r-in"><span>                             end         <span class="op">=</span> <span class="st">"2022-12-31"</span>,</span></span>
-<span class="r-in"><span>                             parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nied"</span>, <span class="st">"nied07"</span>, <span class="st">"nied19"</span>, <span class="st">"sonne"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                             station_ids <span class="op">=</span> <span class="fl">8807</span>,</span></span>
-<span class="r-in"><span>                             expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">achenkirch</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            nied nied07 nied19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-01 -1.0     NA     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-02 -1.0   -1.0     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-03  4.2   -1.0     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-04  8.2    4.2     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-05  0.1    8.2     -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2020-06-06  6.7    0.1     -1</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">achenkirch</span>, type <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="gs_stationdata-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
