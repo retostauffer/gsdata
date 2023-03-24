@@ -299,23 +299,24 @@ For current limits see
 <span class="r-in"><span><span class="co">## NOTE/WARNING:</span></span></span>
 <span class="r-in"><span><span class="co">##   ! "tawes" is not quality controlled and provides limited</span></span></span>
 <span class="r-in"><span><span class="co">##   ! amount of data. Consider to use the "klima-v1-10min" data set which</span></span></span>
-<span class="r-in"><span><span class="co">##   ! provides long-term historical data for the same stations and temporal</span></span></span>
-<span class="r-in"><span><span class="co">##   ! interval (see above).</span></span></span>
+<span class="r-in"><span><span class="co">##   ! provides long-term historical data for the same stations with the</span></span></span>
+<span class="r-in"><span><span class="co">##   ! same temporal resolution, however, the station IDs and</span></span></span>
+<span class="r-in"><span><span class="co">##   ! parameter names (as well as avilavle parameters) will differ</span></span></span>
+<span class="r-in"><span><span class="co">##   ! (check meta data).</span></span></span>
 <span class="r-in"><span><span class="co"># meta$parameter contains available parameters,</span></span></span>
 <span class="r-in"><span><span class="co"># meta$stations  available stations</span></span></span>
 <span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"tawes-v1-10min"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">uibk</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"current"</span>,</span></span>
-<span class="r-in"><span>               resource_id <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span></span>
-<span class="r-in"><span>               start <span class="op">=</span> <span class="st">"2023-01-01"</span>,</span></span>
-<span class="r-in"><span>               end   <span class="op">=</span> <span class="st">"2023-02-01"</span>,</span></span>
-<span class="r-in"><span>               parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"TP"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>               station_ids <span class="op">=</span> <span class="fl">11121</span>,</span></span>
-<span class="r-in"><span>               expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">uibk</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode         <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
+<span class="r-in"><span>                       resource_id  <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span></span>
+<span class="r-in"><span>                       start        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">30</span>,</span></span>
+<span class="r-in"><span>                       end          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       parameters   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"TP"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       station_ids  <span class="op">=</span> <span class="fl">11320</span>,</span></span>
+<span class="r-in"><span>                       expert       <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span></span>
 <span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature\nand dewpoint"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
 <span class="r-plt img"><img src="gs_stationdata-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

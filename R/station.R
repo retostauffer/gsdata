@@ -121,18 +121,20 @@
 #' ## NOTE/WARNING:
 #' ##   ! "tawes" is not quality controlled and provides limited
 #' ##   ! amount of data. Consider to use the "klima-v1-10min" data set which
-#' ##   ! provides long-term historical data for the same stations and temporal
-#' ##   ! interval (see above).
+#' ##   ! provides long-term historical data for the same stations with the
+#' ##   ! same temporal resolution, however, the station IDs and
+#' ##   ! parameter names (as well as avilavle parameters) will differ
+#' ##   ! (check meta data).
 #' # meta$parameter contains available parameters,
 #' # meta$stations  available stations
 #' meta <- gs_metadata("historical", "tawes-v1-10min")
-#' uibk <- gs_stationdata(mode = "current",
-#'                resource_id = "tawes-v1-10min",
-#'                start = "2023-01-01",
-#'                end   = "2023-02-01",
-#'                parameters = c("TL", "TP", "FFAM", "FFX"),
-#'                station_ids = 11121,
-#'                expert      = TRUE)
+#' uibk <- gs_stationdata(mode         = "historical",
+#'                        resource_id  = "tawes-v1-10min",
+#'                        start        = Sys.Date() - 30,
+#'                        end          = Sys.Date(),
+#'                        parameters   = c("TL", "TP", "FFAM", "FFX"),
+#'                        station_ids  = 11320,
+#'                        expert       = TRUE)
 #' plot(uibk,
 #'      screens = c(1, 1, 2, 2),
 #'      col = c(2, 3, 4, 8),
