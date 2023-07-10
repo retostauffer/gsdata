@@ -103,6 +103,8 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
         }
     }
     res <- content(req)
+    if (inherits(res, "xml_document")) 
+        stop("HTTP request returned HTML; data set requires login (todo)")
     res$url <- URL # appending API endpoint URL
 
     # Evaluate result

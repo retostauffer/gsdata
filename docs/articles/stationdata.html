@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,7 +123,7 @@
 <span>     col    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>     ylab   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"air temperature [C]\nwelt bulb temperature [C]"</span>,</span>
 <span>                <span class="st">"mean wind speed [m/s]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
+<p><img src="stationdata_files/figure-html/data_hist_synop-1.png" width="700"></p>
 <p>As <code>expert = TRUE</code> (default) the function will internally download the meta information calling <code><a href="../reference/gs_metadata.html">gs_metadata()</a></code> to check if both arguments provided <code>station_ids</code> and <code>parameters</code> are valid (i.e., the station and the parameters are valid for this specific data set).</p>
 <p>This can be disabled using <code>expert = FALSE</code> which prevents these internal checks and save some time - but may result in API request errors if the station(s) or parameter(s) do not exist.</p>
 <p>One can, of course, get the meta information for the station and parameters if needed (see <code>gs_metdatata()</code> for more details):</p>
@@ -227,10 +227,10 @@
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Default plots</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11330"</span><span class="op">]</span><span class="op">]</span>, nc <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-6-1.png" width="1152"></p>
+<p><img src="stationdata_files/figure-html/unnamed-chunk-3-1.png" width="1152"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11120"</span><span class="op">]</span><span class="op">]</span>, nc <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-6-2.png" width="1152"></p>
+<p><img src="stationdata_files/figure-html/unnamed-chunk-3-2.png" width="1152"></p>
 </div>
 </div>
 </div>
@@ -274,7 +274,7 @@
 <span><span class="co">## 2020-06-06  6.7    0.1     -1</span></span></code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">achenkirch</span>, type <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+<p><img src="stationdata_files/figure-html/meta_data_hist_klima_achenkirch-1.png" width="960"></p>
 </div>
 <div class="section level3">
 <h3 id="min-climate-records-1-station-3-parameters">10min climate records, 1 station, 3 parameters<a class="anchor" aria-label="anchor" href="#min-climate-records-1-station-3-parameters"></a>
@@ -298,31 +298,31 @@
 <span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
+<p><img src="stationdata_files/figure-html/meta_data_hist_klima_uibk-1.png" width="960"></p>
 </div>
 <div class="section level3">
 <h3 id="tawes-1-station-4">TAWES, 1 station, 4<a class="anchor" aria-label="anchor" href="#tawes-1-station-4"></a>
 </h3>
 <ul>
 <li>Dataset: historical TAWES observations, 10min temporal resolution</li>
-<li>January 2023 (31 consecutive days)</li>
+<li>Past 30 consecutive days (based on system date)</li>
 <li>Parameters: four predefined parameters</li>
 <li>Stations: single station, <code>11121</code> Innsbruck Airport</li>
 </ul>
 <p><strong>WARNING:</strong> <code>resource_id = "tawes-v1-10min"</code> is not qualiy controlled and seems to provide a limited amount of data (not going too far back in time). Consider using <code>resource_id = "klima-v1-10min"</code> instead (see above) which provides long-term historical quality-controlled data. Station IDs (and available parameters) differ, tough.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
-<span>                        resource_id <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span>
-<span>                        start       <span class="op">=</span> <span class="st">"2023-01-01"</span>,</span>
-<span>                        end         <span class="op">=</span> <span class="st">"2023-02-01"</span>,</span>
-<span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"TP"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span>
-<span>                        station_ids <span class="op">=</span> <span class="fl">11121</span>,</span>
-<span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span>
+<code class="sourceCode R"><span><span class="va">ibkap</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
+<span>                         resource_id <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span>
+<span>                         start       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">30</span>,    <span class="co"># Today - 30 days (system time)</span></span>
+<span>                         end         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>,         <span class="co"># Today (system time)</span></span>
+<span>                         parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"TP"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span>
+<span>                         station_ids <span class="op">=</span> <span class="fl">11121</span>,</span>
+<span>                         expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ibkap</span>,</span>
 <span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature\nand dewpoint"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-10-1.png" width="960"></p>
+<p><img src="stationdata_files/figure-html/data_hist_tawes_ibkap-1.png" width="960"></p>
 </div>
 </div>
 <div class="section level2">
@@ -337,18 +337,22 @@
 <li>Parameters: precipitation and temperature (annual)</li>
 <li>Stations: single station, <code>23</code> Bregenz</li>
 </ul>
+<p><strong>NOTE:</strong> Not executed; requires login; currently throws an error.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span>
-<span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
+<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error in gs_metadata("historical", "histalp-v1-1y"): HTTP request returned HTML; data set requires login (todo)</span></span></code></pre>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                          resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span>
 <span>                          start       <span class="op">=</span> <span class="st">"1854-01-01"</span>,</span>
 <span>                          end         <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span>
 <span>                          parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R01"</span>, <span class="st">"T01"</span><span class="op">)</span>,</span>
 <span>                          station_ids <span class="op">=</span> <span class="fl">23</span>,</span>
-<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bregenz</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stationdata_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
+<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in gs_stationdata(mode = "historical", resource_id = "histalp-v1-1y", :</span></span>
+<span><span class="co">## no observations available for station 23; returning NA</span></span></code></pre>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">##plot(bregenz, col = c(4, 2))</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

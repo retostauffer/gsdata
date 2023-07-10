@@ -12,7 +12,7 @@ see https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html."><meta property=
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,8 @@ see <a href="https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html" class="
 <span>  <span class="va">mode</span>,</span>
 <span>  <span class="va">resource_id</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">start</span>,</span>
-<span>  <span class="va">end</span>,</span>
+<span>  start <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">station_ids</span>,</span>
 <span>  expert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  version <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -91,7 +91,8 @@ see <a href="https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html" class="
 
 <dt>start, end</dt>
 <dd><p>object of class <code>Date</code>, <code>POSIXt</code>, or <code>character</code>.
-In case of character in a non-ISO format <code>format</code> can be used (see below).</p></dd>
+In case of character in a non-ISO format <code>format</code> can be used (see below).
+Not needed (ignored) when <code>mode = "current"</code>.</p></dd>
 
 
 <dt>station_ids</dt>
@@ -161,6 +162,24 @@ For current limits see
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">######################################################################</span></span></span>
+<span class="r-in"><span><span class="co">## Latest observations for two tawes stations in Innsbruck.</span></span></span>
+<span class="r-in"><span><span class="co">## Parameters TL (air temperature 2m above ground), TS (air temperature 5cm</span></span></span>
+<span class="r-in"><span><span class="co">## above ground) and RR (amount of rain past 10 minutes).</span></span></span>
+<span class="r-in"><span><span class="va">innsbruck</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"current"</span>,</span></span>
+<span class="r-in"><span>                            resource_id <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span></span>
+<span class="r-in"><span>                            parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"TS"</span>, <span class="st">"RR"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            station_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11121</span>, <span class="fl">11320</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Air temp</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">TL</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  22.5  23.2 </span>
+<span class="r-in"><span><span class="co"># Precipitation (rain)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">RR</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     0     0 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">######################################################################</span></span></span>
 <span class="r-in"><span><span class="co">## Example for synop data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Loading meta information</span></span></span>
@@ -252,7 +271,6 @@ For current limits see
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11120"</span><span class="op">]</span><span class="op">]</span>, screen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gs_stationdata-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
 <span class="r-in"><span><span class="co">## Example for daily climatological records</span></span></span>
 <span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-1d"</span><span class="op">)</span></span></span>
@@ -322,83 +340,18 @@ For current limits see
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
 <span class="r-in"><span><span class="co">## Example for annual histalp data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $title</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "HISTALP"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name          long_name        desc unit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  R01 Niederschlagssumme description   mm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  T01   Temperaturmittel description   °C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1YS"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "station"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mode</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "historical"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $response_formats</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $response_formats[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "geojson"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $response_formats[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "csv"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $start_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1753-01-01T00:00+00:00"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $end_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2022-01-01T00:00+00:00"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $stations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 91 features and 11 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 0 ymin: 0 xmax: 16.7481 ymax: 48.754</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          type id group_id             name state altitude valid_from   valid_to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  INDIVIDUAL  1       NA           Admont    NA      646 1853-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  INDIVIDUAL  9       NA     Bad Bleiberg    NA      907 1874-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  INDIVIDUAL 10       NA      Bad Gastein    NA     1092 1854-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  INDIVIDUAL 11       NA Bad Gleichenberg    NA      280 1861-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  INDIVIDUAL 12       NA        Bad Ischl    NA      512 1855-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  INDIVIDUAL 23       NA          Bregenz    NA      424 1853-06-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  INDIVIDUAL 25       NA        Bruck/Mur    NA      482 1875-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  INDIVIDUAL 36       NA Deutschlandsberg    NA      354 1893-11-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  INDIVIDUAL 42       NA        Feldkirch    NA      440 1875-06-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 INDIVIDUAL 44       NA       Feuerkogel    NA     1618 1930-01-01 2022-12-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    has_sunshine has_global_radiation is_active                geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1            NA                   NA     FALSE   POINT (14.457 47.572)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            NA                   NA     FALSE   POINT (13.689 46.625)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3            NA                   NA     FALSE POINT (13.1333 47.1106)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            NA                   NA     FALSE   POINT (15.907 46.879)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5            NA                   NA     FALSE    POINT (13.65 47.707)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6            NA                   NA     FALSE      POINT (9.735 47.5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7            NA                   NA     FALSE    POINT (15.25 47.405)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8            NA                   NA     FALSE   POINT (15.229 46.822)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9            NA                   NA     FALSE  POINT (9.6086 47.2697)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10           NA                   NA     FALSE   POINT (13.718 47.818)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $id_type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Synop"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "https://dataset.api.hub.zamg.ac.at/v1/station/historical/histalp-v1-1y/metadata"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
-<span class="r-in"><span>                          resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span></span>
-<span class="r-in"><span>                          start       <span class="op">=</span> <span class="st">"1854-01-01"</span>,</span></span>
-<span class="r-in"><span>                          end         <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span></span>
-<span class="r-in"><span>                          parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R01"</span>, <span class="st">"T01"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                          station_ids <span class="op">=</span> <span class="fl">23</span>,</span></span>
-<span class="r-in"><span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bregenz</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-6.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co">## Requires login; will result in an error for now (todo)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
+<span class="r-in"><span>                              resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span></span>
+<span class="r-in"><span>                              start       <span class="op">=</span> <span class="st">"1854-01-01"</span>,</span></span>
+<span class="r-in"><span>                              end         <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span></span>
+<span class="r-in"><span>                              parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R01"</span>, <span class="st">"T01"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                              station_ids <span class="op">=</span> <span class="fl">23</span>,</span></span>
+<span class="r-in"><span>                              expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bregenz</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

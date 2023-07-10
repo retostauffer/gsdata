@@ -8,8 +8,8 @@ gs_stationdata(
   mode,
   resource_id,
   parameters = NULL,
-  start,
-  end,
+  start = NULL,
+  end = NULL,
   station_ids,
   expert = FALSE,
   version = 1L,
@@ -27,7 +27,8 @@ gs_stationdata(
 \item{parameters}{character vector to define which parameters to process.}
 
 \item{start, end}{object of class \code{Date}, \code{POSIXt}, or \code{character}.
-In case of character in a non-ISO format \code{format} can be used (see below).}
+In case of character in a non-ISO format \code{format} can be used (see below).
+Not needed (ignored) when \code{mode = "current"}.}
 
 \item{station_ids}{integer vector with the station IDs to be processed.}
 
@@ -77,6 +78,20 @@ For current limits see
 }
 \examples{
 ######################################################################
+## Latest observations for two tawes stations in Innsbruck.
+## Parameters TL (air temperature 2m above ground), TS (air temperature 5cm
+## above ground) and RR (amount of rain past 10 minutes).
+innsbruck <- gs_stationdata(mode        = "current",
+                            resource_id = "tawes-v1-10min",
+                            parameters  = c("TL", "TS", "RR"),
+                            station_ids = c(11121, 11320),
+                            expert      = TRUE)
+# Air temp
+sapply(innsbruck, function(x) x$TL)
+# Precipitation (rain)
+sapply(innsbruck, function(x) x$RR)
+
+######################################################################
 ## Example for synop data
 
 ## Loading meta information
@@ -113,7 +128,6 @@ x <- gs_stationdata(mode        = "historical",
 plot(x[["11330"]], screen = c(1, 1, 2), col = c(2, 3, 4))
 is.null(x[["11328"]])
 plot(x[["11120"]], screen = c(1, 1, 2), col = c(2, 3, 4))
-
 
 ######################################################################
 ## Example for daily climatological records
@@ -174,15 +188,18 @@ plot(uibk,
 
 ######################################################################
 ## Example for annual histalp data
-gs_metadata("historical", "histalp-v1-1y")
-bregenz <- gs_stationdata(mode        = "historical",
-                          resource_id = "histalp-v1-1y",
-                          start       = "1854-01-01",
-                          end         = "2022-01-01",
-                          parameters  = c("R01", "T01"),
-                          station_ids = 23,
-                          expert      = TRUE)
-plot(bregenz, col = c(4, 2))
+## Requires login; will result in an error for now (todo)
+\dontrun{
+    gs_metadata("historical", "histalp-v1-1y")
+    bregenz <- gs_stationdata(mode        = "historical",
+                              resource_id = "histalp-v1-1y",
+                              start       = "1854-01-01",
+                              end         = "2022-01-01",
+                              parameters  = c("R01", "T01"),
+                              station_ids = 23,
+                              expert      = TRUE)
+    plot(bregenz, col = c(4, 2))
+}
 
 }
 \author{

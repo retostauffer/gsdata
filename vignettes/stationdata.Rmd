@@ -42,7 +42,7 @@ More information about the data sets can be found on the
 * Parameters: three parameters only
 * Stations: single station, `11330` Mayrhofen
 
-```{r}
+```{r data_hist_synop}
 mayrhofen <- gs_stationdata(mode        = "historical",
                             resource_id = "synop-v1-1h",
                             start       = "2022-01-01",
@@ -73,7 +73,7 @@ One can, of course, get the meta information for the station and parameters
 if needed (see `gs_metdatata()` for more details):
 
 
-```{r}
+```{r meta_hist_synop}
 meta <- gs_metadata(mode = "historical", resource_id = "synop-v1-1h")
 subset(meta$stations, id == 11330)
 subset(meta$parameters, name %in% c("T", "Td", "ff"))
@@ -91,7 +91,7 @@ download all avialable parameters by not specifying `parameters` (uses `paramete
 This will return all avialable data for each of the stations in a named list, where
 the names of the elements correspond to the station `id`.
 
-```{r}
+```{r data_hist_synop_innsbruck, warnings = TRUE}
 x <- gs_stationdata(mode        = "historical",
                     resource_id = "synop-v1-1h",
                     start       = "2020-01-01",
@@ -143,7 +143,7 @@ parameters differ).
 
 To get information about all available stations and parameters call:
 
-```{r}
+```{r data_hist_tawes}
 meta <- gs_metadata("historical", "tawes-v1-10min")
 ```
 
@@ -160,7 +160,7 @@ information on the return.
 * Parameters: three distinct parameters (precipitation and snow height)
 * Stations: single station, `8807` Achenkirch
 
-```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+```{r, meta_data_hist_klima_achenkirch, plot = TRUE, fig.width = 10, fig.height = 6}
 meta <- gs_metadata("historical", "klima-v1-1d")
 achenkirch <- gs_stationdata(mode        = "historical",
                              resource_id = "klima-v1-1d",
@@ -181,7 +181,7 @@ plot(achenkirch, type = "h")
 * Parameters: three distinct parameters (precipitation and snow height)
 * Stations: single station, `8807` Achenkirch
 
-```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+```{r meta_data_hist_klima_uibk, plot = TRUE, fig.width = 10, fig.height = 6}
 meta <- gs_metadata("historical", "klima-v1-10min")
 uibk <-  gs_stationdata(mode        = "historical",
                         resource_id = "klima-v1-10min",
@@ -199,7 +199,7 @@ plot(uibk,
 ## TAWES, 1 station, 4 
 
 * Dataset: historical TAWES observations, 10min temporal resolution
-* January 2023 (31 consecutive days)
+* Past 30 consecutive days (based on system date)
 * Parameters: four predefined parameters
 * Stations: single station, `11121` Innsbruck Airport
 
@@ -209,15 +209,15 @@ Consider using `resource_id = "klima-v1-10min"` instead (see above) which
 provides long-term historical quality-controlled data. Station IDs (and
 available parameters) differ, tough.
 
-```{r, plot = TRUE, fig.width = 10, fig.height = 6}
-uibk <-  gs_stationdata(mode        = "historical",
-                        resource_id = "tawes-v1-10min",
-                        start       = "2023-01-01",
-                        end         = "2023-02-01",
-                        parameters  = c("TL", "TP", "FFAM", "FFX"),
-                        station_ids = 11121,
-                        expert      = TRUE)
-plot(uibk,
+```{r data_hist_tawes_ibkap, plot = TRUE, fig.width = 10, fig.height = 6}
+ibkap <-  gs_stationdata(mode        = "historical",
+                         resource_id = "tawes-v1-10min",
+                         start       = Sys.Date() - 30,    # Today - 30 days (system time)
+                         end         = Sys.Date(),         # Today (system time)
+                         parameters  = c("TL", "TP", "FFAM", "FFX"),
+                         station_ids = 11121,
+                         expert      = TRUE)
+plot(ibkap,
      screens = c(1, 1, 2, 2),
      col = c(2, 3, 4, 8),
      ylab = c("temperature\nand dewpoint", "mean wind\nand gusts"))
@@ -233,7 +233,9 @@ plot(uibk,
 * Parameters: precipitation and temperature (annual)
 * Stations: single station, `23` Bregenz
 
-```{r, plot = TRUE, fig.width = 10, fig.height = 6}
+**NOTE:** Not executed; requires login; currently throws an error.
+
+```{r meta_data_hist_histalp_login, plot = TRUE, fig.width = 10, fig.height = 6, error = TRUE}
 meta <- gs_metadata("historical", "histalp-v1-1y")
 bregenz <- gs_stationdata(mode        = "historical",
                           resource_id = "histalp-v1-1y",
@@ -243,7 +245,7 @@ bregenz <- gs_stationdata(mode        = "historical",
                           station_ids = 23,
                           expert      = TRUE)
 
-plot(bregenz, col = c(4, 2))
+##plot(bregenz, col = c(4, 2))
 ```
 
 

@@ -10,6 +10,7 @@
 #' @param parameters character vector to define which parameters to process.
 #' @param start,end object of class \code{Date}, \code{POSIXt}, or \code{character}.
 #'        In case of character in a non-ISO format \code{format} can be used (see below).
+#'        Not needed (ignored) when \code{mode = "current"}.
 #' @param station_ids integer vector with the station IDs to be processed.
 #' @param expert logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
 #'        check if the input arguments are valid. May result in unsuccessful requests
@@ -45,6 +46,20 @@
 #' is available) is returned. The name of the list corresponds to the station id requested.
 #'
 #' @examples
+#' ######################################################################
+#' ## Latest observations for two tawes stations in Innsbruck.
+#' ## Parameters TL (air temperature 2m above ground), TS (air temperature 5cm
+#' ## above ground) and RR (amount of rain past 10 minutes).
+#' innsbruck <- gs_stationdata(mode        = "current",
+#'                             resource_id = "tawes-v1-10min",
+#'                             parameters  = c("TL", "TS", "RR"),
+#'                             station_ids = c(11121, 11320),
+#'                             expert      = TRUE)
+#' # Air temp
+#' sapply(innsbruck, function(x) x$TL)
+#' # Precipitation (rain)
+#' sapply(innsbruck, function(x) x$RR)
+#'
 #' ######################################################################
 #' ## Example for synop data
 #' 
@@ -82,7 +97,6 @@
 #' plot(x[["11330"]], screen = c(1, 1, 2), col = c(2, 3, 4))
 #' is.null(x[["11328"]])
 #' plot(x[["11120"]], screen = c(1, 1, 2), col = c(2, 3, 4))
-#'
 #'
 #' ######################################################################
 #' ## Example for daily climatological records
@@ -143,15 +157,18 @@
 #'
 #' ######################################################################
 #' ## Example for annual histalp data
-#' gs_metadata("historical", "histalp-v1-1y")
-#' bregenz <- gs_stationdata(mode        = "historical",
-#'                           resource_id = "histalp-v1-1y",
-#'                           start       = "1854-01-01",
-#'                           end         = "2022-01-01",
-#'                           parameters  = c("R01", "T01"),
-#'                           station_ids = 23,
-#'                           expert      = TRUE)
-#' plot(bregenz, col = c(4, 2))
+#' ## Requires login; will result in an error for now (todo)
+#' \dontrun{
+#'     gs_metadata("historical", "histalp-v1-1y")
+#'     bregenz <- gs_stationdata(mode        = "historical",
+#'                               resource_id = "histalp-v1-1y",
+#'                               start       = "1854-01-01",
+#'                               end         = "2022-01-01",
+#'                               parameters  = c("R01", "T01"),
+#'                               station_ids = 23,
+#'                               expert      = TRUE)
+#'     plot(bregenz, col = c(4, 2))
+#' }
 #'
 #' @author Reto Stauffer
 #' @export
@@ -160,7 +177,7 @@
 #' @importFrom parsedate parse_iso_8601
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo index
-gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, station_ids, expert = FALSE,
+gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, end = NULL, station_ids, expert = FALSE,
                            version = 1L, verbose = FALSE, format = NULL, limit = 5e5, config = list()) {
 
     stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
@@ -170,6 +187,13 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
 
     stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
+
+    # Matching 'mode'.
+    match_mode <- function(mode, known = c("current", "historical")) {
+        res <- tryCatch(match.arg(mode, known), error = function(x) FALSE)
+        if (isFALSE(res)) match.arg(mode, gs_datasets()$mode) else res
+    }
+    mode <- match_mode(mode)
 
     # These cause an API error and will be excluded from the get-all-parameters
     # requests and a warning will be thrown if the user specifies them manually
@@ -228,15 +252,24 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start, end, sta
     }
 
     # Forcing start/end date to POSIXt/Date
-    stopifnot("argument 'start' of wrong type" = inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
-    stopifnot("argument 'end' of wrong type"   = inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
+    # If mode == "current" end will be set to the current date,
+    # start to current date - 1 day ignoring user inputs.
+    if (mode == "current") {
+        if ((!is.null(start) | !is.null(end)) & verbose)
+            message("Argument 'start' and 'end' will be ignored for mode = '", mode, "'", sep = "")
+        start <- Sys.Date() - 1
+        end   <- Sys.Date()
+    } else {
+        stopifnot("argument 'start' of wrong type" = inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
+        stopifnot("argument 'end' of wrong type"   = inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
 
-    stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
-    if (is.character(start))
-       start <- if (is.null(format)) as.POSIXct(start) else as.POSIXct(start, format = format)
-    if (is.character(end))
-       end <- if (is.null(format)) as.POSIXct(end) else as.POSIXct(end, format = format)
-    stopifnot("end date must be greater than start date" = end > start)
+        stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
+        if (is.character(start))
+           start <- if (is.null(format)) as.POSIXct(start) else as.POSIXct(start, format = format)
+        if (is.character(end))
+           end <- if (is.null(format)) as.POSIXct(end) else as.POSIXct(end, format = format)
+        stopifnot("end date must be greater than start date" = end > start)
+    }
 
     # To avoid running into the API data request limitation we calculate
     # batches along the time axis. Will return a list of start/end date and time
