@@ -182,7 +182,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
                            version = 1L, verbose = FALSE, format = NULL, limit = 5e5, config = list()) {
 
     stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
-    stopifnot("argument 'mode' must be character of length 1" = is.character(resource_id) & length(mode) == 1L)
+    stopifnot("argument 'resource_id' must be character of length 1" = is.character(resource_id) & length(resource_id) == 1L)
     stopifnot("argument 'parameters' must be NULL or a character vector of length > 0" =
               is.null(parameters) || (is.character(parameters) & length(parameters) > 0))
 
