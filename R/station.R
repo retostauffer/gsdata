@@ -3,7 +3,7 @@
 #' Downloading Station Data
 #'
 #' Accessing the API endpoint \code{v<version>/station},
-#' see <https://dataset.api.hub.zamg.ac.at/v1/docs/quickstart.html>.
+#' see <https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html>.
 #'
 #' @param mode character, specify mode of data.
 #' @param resource_id character, specify resource identifier of data.
@@ -26,8 +26,9 @@
 #'        to the \code{httr::GET} request if needed.
 #'
 #' @details This function is a convenience function for downloading different sets of
-#' station data from the ZAMG data hub (now Geosphere). The API may change and additional
-#' resources may be added, for details see <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#available-datasets>.
+#' station data from the GeoSphere data hub (formerly ZAMG). The API may change and additional
+#' resources may be added, for details see
+#' <https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html>.
 #'
 #' To see what's available call \code{gs_datasets("station")}.
 #'
@@ -36,7 +37,7 @@
 #' of parameters times number of time steps). This function will pre-calculate the number
 #' of expected elements and split the request into batches along the time dimension - if needed.
 #' For current limits see
-#' <https://dataset.api.hub.zamg.ac.at/v1/docs/daten.html#limitationen-beim-datendownload>.
+#' <https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request_size_limit.html>.
 #'
 #' @return If only data for one single station (\code{length(station_ids) == 1}) is requested,
 #' a \code{zoo} object will be returned if data is available. If no data is available,

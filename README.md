@@ -5,7 +5,7 @@
 
 ## Purpose
 
-Interfacing the [Geosphere Austria Data Hub](https://data.hub.zamg.ac.at/)
+Interfacing the [GeoSphere Austria Data Hub](https://data.hub.geosphere.at/)
 (formerly known as ZAMG; Austrian national weather service).
 Their API provides a series of publicly available meteorological/climatological data sets.
 Currently, this package only allows to download stationdata (no gridded/spatial data).

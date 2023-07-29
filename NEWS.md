@@ -1,4 +1,8 @@
 
+# gsdata 0.0-5
+
+* Switching API endpoint to newly released URL (<https://data.hub.geosphere.at>).
+
 # gsdata 0.0-4
 
 * Ignoring `start` and `end` when calling `gs_stationdata()` with `mode = "current"`

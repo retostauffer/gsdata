@@ -4,7 +4,6 @@
 
 if (interactive()) library("tinytest")
 
-
 expect_silent(ds <- gs_datasets(),
                  info = "Calling dataset endpoint")
 expect_inherits(ds, "data.frame",

@@ -15,7 +15,7 @@ gs_baseurl <- function(version = 1L) {
     version <- as.integer(version)
     stopifnot("version must be larger or equal to 1" = version >= 1)
 
-    sprintf("https://dataset.api.hub.zamg.ac.at/v%d", version)
+    sprintf("https://dataset.api.hub.geosphere.at/v%d", version)
 }
 
 #' Extract/Calculate Temporal Interval

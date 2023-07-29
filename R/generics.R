@@ -7,7 +7,7 @@
 #' @exportS3Method print gs_stationdata
 print.gs_stationdata <- function(x, ...) {
     stn <- attr(x, "station")
-    cat("Geosphere stationdata\n")
+    cat("GeoSphere stationdata\n")
     cat("Station ID: ", stn$id, "\nCoordinates: ", stn$coord, "\n")
 
     param <- attr(x, "parameter")
