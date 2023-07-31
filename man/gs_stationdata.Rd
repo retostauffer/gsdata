@@ -13,9 +13,10 @@ gs_stationdata(
   station_ids,
   expert = FALSE,
   version = 1L,
+  drop = TRUE,
   verbose = FALSE,
   format = NULL,
-  limit = 5e+05,
+  limit = 2e+05,
   config = list()
 )
 }
@@ -39,13 +40,17 @@ do not have to be evaluated.}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
 
+\item{drop}{logical, if \code{TRUE} parameters and times with no data are removed
+before returning the data.}
+
 \item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
 
 \item{format}{\code{NULL} (default) or character string, used if \code{start}/\code{end}
 are characters in a specific (non ISO) format.}
 
 \item{limit}{integer, API data request limit. If the request sent by the user
-exceeds this limit, the request will be split into batches automatically.}
+exceeds this limit, the request will be split into batches automatically.
+Set to 2e5 as the limit stated on the API documentation (1e6) will not be accepted.}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}

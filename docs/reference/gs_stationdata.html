@@ -12,7 +12,7 @@ see https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html."><meta pr
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,9 +68,10 @@ see <a href="https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html" 
 <span>  <span class="va">station_ids</span>,</span>
 <span>  expert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  version <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  drop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  format <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">5e+05</span>,</span>
+<span>  limit <span class="op">=</span> <span class="fl">2e+05</span>,</span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -110,6 +111,11 @@ do not have to be evaluated.</p></dd>
 <dd><p>integer, API version (defaults to <code>1L</code>).</p></dd>
 
 
+<dt>drop</dt>
+<dd><p>logical, if <code>TRUE</code> parameters and times with no data are removed
+before returning the data.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>logical, if set <code>TRUE</code> some more output will be produced.</p></dd>
 
@@ -121,7 +127,8 @@ are characters in a specific (non ISO) format.</p></dd>
 
 <dt>limit</dt>
 <dd><p>integer, API data request limit. If the request sent by the user
-exceeds this limit, the request will be split into batches automatically.</p></dd>
+exceeds this limit, the request will be split into batches automatically.
+Set to 2e5 as the limit stated on the API documentation (1e6) will not be accepted.</p></dd>
 
 
 <dt>config</dt>
@@ -174,7 +181,7 @@ For current limits see
 <span class="r-in"><span><span class="co"># Air temp</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">TL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  18.7  18.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  20.8  21.8 </span>
 <span class="r-in"><span><span class="co"># Precipitation (rain)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">RR</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
@@ -248,8 +255,8 @@ For current limits see
 <span class="r-in"><span>                            end         <span class="op">=</span> <span class="st">"2020-01-03"</span>,</span></span>
 <span class="r-in"><span>                            parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T"</span>, <span class="st">"Td"</span>, <span class="st">"ff"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                            station_ids <span class="op">=</span> <span class="fl">11330</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimated number of elements to be retrieved: 192 (1 x 3 x 48)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Number of requests to be performed: 1 (limit set to 5e+05)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimated number of elements to be retrieved: 196 (1 x 4 x 49)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Number of requests to be performed: 1 (limit set to 2e+05)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calling: https://dataset.api.hub.geosphere.at/v1/station/historical/synop-v1-1h?parameters=T,Td,ff&amp;start=2020-01-01T00:00&amp;end=2020-01-03T00:00&amp;station_ids=11330</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span></span>
@@ -264,7 +271,6 @@ For current limits see
 <span class="r-in"><span>                    parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T"</span>, <span class="st">"Td"</span>, <span class="st">"ff"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    station_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11330</span>, <span class="fl">11328</span>, <span class="fl">11120</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no observations available for station 11328; returning NA</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11330"</span><span class="op">]</span><span class="op">]</span>, screen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gs_stationdata-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11328"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
@@ -299,6 +305,7 @@ For current limits see
 <span class="r-in"><span><span class="co"># meta$parameter contains available parameters,</span></span></span>
 <span class="r-in"><span><span class="co"># meta$stations  available stations</span></span></span>
 <span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-10min"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.arg(resource_id, unique(dataset$resource_id)):</span> 'arg' should be one of “histalp-v1-1y”, “klima-v1-1d”, “klima-v1-1h”, “klima-v1-1m”, “tawes-v1-10min”, “synop-v1-1h”</span>
 <span class="r-in"><span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
 <span class="r-in"><span>                        resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span></span>
 <span class="r-in"><span>                        start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span></span>
@@ -306,11 +313,13 @@ For current limits see
 <span class="r-in"><span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        station_ids <span class="op">=</span> <span class="fl">11803</span>,</span></span>
 <span class="r-in"><span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in FUN(X[[i]], ...):</span> An endpoint with type 'station', resource_id 'klima-v1-10min', and mode 'historical' does not exist.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Data request not successful (status code != 200)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span></span>
 <span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'uibk' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
@@ -336,7 +345,7 @@ For current limits see
 <span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature\nand dewpoint"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>

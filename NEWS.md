@@ -1,4 +1,14 @@
 
+# gsdata 0.0-6
+
+* Fixed a bug in `gs_stationdata()` when batching due to limit
+* Reduced the `limit` to `2e5`. API documentation states that the limit is 1e6,
+  but this leads to bad requests (exceeding API limits)
+* Adding `drop = TRUE` to `gs_datationdata()`.
+* Adding a series of basic tests for `gs_stationdata()`
+* Currently facing a strange behaviour of `ve/datasets`, see
+    <https://github.com/Geosphere-Austria/dataset-api-docs/issues/11>
+
 # gsdata 0.0-5
 
 * Switching API endpoint to newly released URL (<https://data.hub.geosphere.at>).

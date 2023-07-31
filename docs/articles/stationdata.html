@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,32 +165,140 @@
 <span>                    start       <span class="op">=</span> <span class="st">"2020-01-01"</span>,</span>
 <span>                    end         <span class="op">=</span> <span class="st">"2020-01-11"</span>,</span>
 <span>                    station_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11330</span>, <span class="fl">11328</span>, <span class="fl">11120</span><span class="op">)</span>,</span>
-<span>                    expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in gs_stationdata(mode = "historical", resource_id = "synop-v1-1h", :</span></span>
-<span><span class="co">## no observations available for station 11328; returning NA</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span>                    expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "list"</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "11330" "11328" "11120"</span></span></code></pre>
 <p><code>expert = TRUE</code> skips the internal check whether or not the <code>station_ids</code> given are valid (i.e., if they even exist for this data set).</p>
 <p>Note that station <code>11328</code> does not provide any data for the time period specified resulting in a warning and an will return a missing value (<code>NA</code>).</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">[[</span><span class="st">"11328"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] NA</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## GeoSphere stationdata</span></span>
+<span><span class="co">## Station ID:  11328 </span></span>
+<span><span class="co">## Coordinates:  11.70528 47.53222 </span></span>
+<span><span class="co">## Parameters: </span></span>
+<span><span class="co">##   C1         Wolkenart der tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   C2         Wolkenart der 2.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   C3         Wolkenart der 3.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   C4         Wolkenart der 4.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   CH         Art der hohen Wolken (Code (Synop))</span></span>
+<span><span class="co">##   CL         Art der tiefen Wolken (Code (Synop))</span></span>
+<span><span class="co">##   CM         Art der mittelhohen Wolken (Code (Synop))</span></span>
+<span><span class="co">##   Ch1        1.Wolkenart unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ch2        2.Wolkenart unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ch3        3.Wolkenart unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ct1        1.Aussehen der Wolkenobergrenze der Wolken unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ct2        2.Aussehen der Wolkenobergrenze der Wolken unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ct3        3.Aussehen der Wolkenobergrenze der Wolken unterhalb der Station (Code (Synop))</span></span>
+<span><span class="co">##   Da         Richtungsangabe der Wirbelerscheinung (Code (Synop))</span></span>
+<span><span class="co">##   E          Erdbodenzustand ohne Schnee/Eis (Code (Synop))</span></span>
+<span><span class="co">##   Eschnee    Erdbodenzustand mit Schneedecke/Eis (Code (Synop))</span></span>
+<span><span class="co">##   Ir         Niederschlagsindikator (Code (Synop))</span></span>
+<span><span class="co">##   Iw         Einheit der Windgeschwindigkeit (Code (Synop))</span></span>
+<span><span class="co">##   Ix         Indikator für Wettergruppen und Stationstyp (Code (Synop))</span></span>
+<span><span class="co">##   Mw         Art der Wirbelerscheinung (Code (Synop))</span></span>
+<span><span class="co">##   N          Gesamtbedeckung des Himmels mit Wolken (Code (Synop))</span></span>
+<span><span class="co">##   Nh         Bedeckungsgrad mit tiefen oder mittelhohen Wolken (Code (Synop))</span></span>
+<span><span class="co">##   Nh1        1.Bedeckungsgrad mit Wolken unter der Station (Code (Synop))</span></span>
+<span><span class="co">##   Nh2        2.Bedeckungsgrad mit Wolken unter der Station (Code (Synop))</span></span>
+<span><span class="co">##   Nh3        3.Bedeckungsgrad mit Wolken unter der Station (Code (Synop))</span></span>
+<span><span class="co">##   Ns1        Bedeckungsgrad der tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   Ns2        Bedeckungsgrad der 2.tiefesten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   Ns3        Bedeckungsgrad der 3.tiefesten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   Ns4        Bedeckungsgrad der 4.tiefesten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   Pg         Luftdruck (hPa)</span></span>
+<span><span class="co">##   Pp         Reduzierter Luftdruck (hPa)</span></span>
+<span><span class="co">##   RR24       Niederschlagsmenge in den 24 Stunden vor der Beobachtung (mm)</span></span>
+<span><span class="co">##   RR3        Niederschlagsmenge Sektion3 (mm)</span></span>
+<span><span class="co">##   RR932      Hagelkorndurchmesser (Code (Synop))</span></span>
+<span><span class="co">##   RR934      Glatteisdicke (Code (Synop))</span></span>
+<span><span class="co">##   RRR        Niederschlagsmenge im Beobachtungszeitraum tr (mm)</span></span>
+<span><span class="co">##   RRRv       Niederschlagsmenge des Vortages (mm)</span></span>
+<span><span class="co">##   So         Reif oder färbiger Niederschlag (Code (Synop))</span></span>
+<span><span class="co">##   T          Lufttemperatur (°C)</span></span>
+<span><span class="co">##   Td         Taupunkttemperatur (°C)</span></span>
+<span><span class="co">##   Tg         Minimum der Lufttemperatur 5cm über Boden (°C)</span></span>
+<span><span class="co">##   Tmax       Maximum der Lufttemperatur (°C)</span></span>
+<span><span class="co">##   Tmaxv      Maximum der Lufttemperatur des Vortags (°C)</span></span>
+<span><span class="co">##   Tmin       Minimum der Lufttemperatur (°C)</span></span>
+<span><span class="co">##   Tw         Wassertemperatur (°C)</span></span>
+<span><span class="co">##   VV         Sichtweite (Code (Synop))</span></span>
+<span><span class="co">##   W1         1.Wetterverlauf (Code (Synop))</span></span>
+<span><span class="co">##   W2         2.Wetterverlauf (Code (Synop))</span></span>
+<span><span class="co">##   a          Luftdrucktendenz (3 Stunden) (Code (Synop))</span></span>
+<span><span class="co">##   app24      Luftdrucktendenz (24 Stunden) (Code (Synop))</span></span>
+<span><span class="co">##   boe        Höchste Bö (10 Minuten) (m/s)</span></span>
+<span><span class="co">##   czeit      Beobachtungszeit ()</span></span>
+<span><span class="co">##   datumsec   Beobachtungszeit (s)</span></span>
+<span><span class="co">##   dd         Windrichtung (°)</span></span>
+<span><span class="co">##   einspielzeit Einspielzeit in die Datenbank (s)</span></span>
+<span><span class="co">##   ff         Windgeschwindigkeit (m/s)</span></span>
+<span><span class="co">##   flag_rst   Flag Reststring (Code)</span></span>
+<span><span class="co">##   gruen      Korrekturflag (Code)</span></span>
+<span><span class="co">##   h          Höhe der tiefsten Wolken (Code (Synop))</span></span>
+<span><span class="co">##   hh1        1.Obergrenze der Wolken unter der Station (m)</span></span>
+<span><span class="co">##   hh2        2.Obergrenze der Wolken unter der Station (m)</span></span>
+<span><span class="co">##   hh3        3.Obergrenze der Wolken unter der Station (m)</span></span>
+<span><span class="co">##   hs1        Wolkenhöhe der tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   hs2        Wolkenhöhe der 2.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   hs3        Wolkenhöhe der 3.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   hs4        Wolkenhöhe der 4.tiefsten Wolkenschicht (Code (Synop))</span></span>
+<span><span class="co">##   io         Intenstität von Reif oder färbigem Niederschlag (Code (Synop))</span></span>
+<span><span class="co">##   nschnee    Neuschneehöhe (Code (Synop))</span></span>
+<span><span class="co">##   p          Betrag der Luftdruckänderung (hPa)</span></span>
+<span><span class="co">##   qflag      Qualitätsflag ()</span></span>
+<span><span class="co">##   rel        Relative Feuchte (%)</span></span>
+<span><span class="co">##   rot        Korrekturflag (Code)</span></span>
+<span><span class="co">##   schnee     Gesamtschneehöhe (Code (Synop))</span></span>
+<span><span class="co">##   schwarz    Korrekturflag (Code)</span></span>
+<span><span class="co">##   sonne      Sonnenscheindauer der letzten Stunde (h)</span></span>
+<span><span class="co">##   sonnetag   Sonnenscheindauer des Vortags (h)</span></span>
+<span><span class="co">##   sp1        Besondere Wettererscheinungen, 1. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp10       Besondere Wettererscheinungen, 10. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp11       Besondere Wettererscheinungen, 11. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp12       Besondere Wettererscheinungen, 12. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp13       Besondere Wettererscheinungen, 13. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp14       Besondere Wettererscheinungen, 14. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp15       Besondere Wettererscheinungen, 15. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp2        Besondere Wettererscheinungen, 2. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp3        Besondere Wettererscheinungen, 3. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp4        Besondere Wettererscheinungen, 4. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp5        Besondere Wettererscheinungen, 5. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp6        Besondere Wettererscheinungen, 6. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp7        Besondere Wettererscheinungen, 7. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp8        Besondere Wettererscheinungen, 8. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   sp9        Besondere Wettererscheinungen, 9. 9er Gruppe (Code (Synop))</span></span>
+<span><span class="co">##   tr         Beobachtungszeitraum für Niederschlagsmenge (Code (Synop))</span></span>
+<span><span class="co">##   tr3        Beobachtungszeitraum für Niederschlagsmenge RR3, Sektion 3 (Code (Synop))</span></span>
+<span><span class="co">##   w1boe      Höchste Bö (W1W2) (m/s)</span></span>
+<span><span class="co">##   w1ffmax    Höchste mittlere Windgeschwindigkeit (W1W2) (m/s)</span></span>
+<span><span class="co">##   ww         Wetter zur Beobachtungszeit (Code (Synop))</span></span>
+<span><span class="co">##   ww960      Erweiterter Wetterzustand: gleichzeitig mit ww (Code (Synop))</span></span>
+<span><span class="co">##   ww961      Erweiterter Wetterzustand: gleichzeitig mit w1w1 (Code (Synop))</span></span>
+<span><span class="co">##   ww962      Erweiterter Wetterzustand: in der letzten Stunde, bei ww=20-29 (Code (Synop))</span></span>
+<span><span class="co">##   ww963      Erweiterter Wetterzustand: in der letzten Stunde, bei w1w1=20-29 (Code (Synop))</span></span>
+<span><span class="co">##   ww964      Erweiterter Wetterzustand: im Bezugszeitraum von W1W2 bei ww (Code (Synop))</span></span>
+<span><span class="co">##   ww965      Erweiterter Wetterzustand: im Bezugszeitraum von W1W2 bei w1w1 (Code (Synop)) </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Data:</span></span>
+<span><span class="co">## numeric(0)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Index:</span></span>
+<span><span class="co">## Date of length 0</span></span></code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11328"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
+<pre><code><span><span class="co">## logical(0)</span></span></code></pre>
 <p>The other two elements of the list again contain objects of class c(“gs_stationdata”, “zoo”):</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"11330"</span>, <span class="st">"11120"</span><span class="op">)</span><span class="op">]</span>, <span class="va">class</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`11330`</span></span>
 <span><span class="co">## [1] "gs_stationdata" "zoo"           </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $`11120`</span></span>
 <span><span class="co">## [1] "gs_stationdata" "zoo"</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"11330"</span>, <span class="st">"11120"</span><span class="op">)</span><span class="op">]</span>, <span class="va">head</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`11330`</span></span>
 <span><span class="co">##                     Ir Iw Ix    Pg     Pp RR3 RRR    T   Td Tg Tmax Tmin W1 W2</span></span>
@@ -217,18 +325,18 @@
 <span><span class="co">## 2020-01-01 00:00:00  NA  NA  NA NA  NA    NA      NA 49</span></span>
 <span><span class="co">## 2020-01-01 01:00:00  NA  NA  NA NA  NA    NA      NA 49</span></span></code></pre>
 <p>The API, however, provides different data for the other two stations as these two stations do not provide the data for the very same parameters. Parameters not providing any data will not be included in the return.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"11330"</span>, <span class="st">"11120"</span><span class="op">)</span><span class="op">]</span>, <span class="va">dim</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`11330`</span></span>
 <span><span class="co">## [1] 241  29</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $`11120`</span></span>
 <span><span class="co">## [1] 241  44</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Default plots</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11330"</span><span class="op">]</span><span class="op">]</span>, nc <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="stationdata_files/figure-html/unnamed-chunk-3-1.png" width="1152"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="st">"11120"</span><span class="op">]</span><span class="op">]</span>, nc <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="stationdata_files/figure-html/unnamed-chunk-3-2.png" width="1152"></p>
 </div>
@@ -239,7 +347,7 @@
 </h2>
 <p>TAWES stands for “teilautomatische Wetterstation” and provides data on a 10 minute temporal resolution. Requesting data for TAWES stations works the very same way as for synop stations as shown above, however, the set of avialble stations and parameters is different (names of the parameters differ).</p>
 <p>To get information about all available stations and parameters call:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"tawes-v1-10min"</span><span class="op">)</span></span></code></pre></div>
 <p>… and check the vignette <a href="articles/metadata.html">Metadata</a> for more information on the return.</p>
 </div>
@@ -255,7 +363,7 @@
 <li>Parameters: three distinct parameters (precipitation and snow height)</li>
 <li>Stations: single station, <code>8807</code> Achenkirch</li>
 </ul>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-1d"</span><span class="op">)</span></span>
 <span><span class="va">achenkirch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                             resource_id <span class="op">=</span> <span class="st">"klima-v1-1d"</span>,</span>
@@ -272,7 +380,7 @@
 <span><span class="co">## 2020-06-04  8.2    4.2     -1</span></span>
 <span><span class="co">## 2020-06-05  0.1    8.2     -1</span></span>
 <span><span class="co">## 2020-06-06  6.7    0.1     -1</span></span></code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">achenkirch</span>, type <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="stationdata_files/figure-html/meta_data_hist_klima_achenkirch-1.png" width="960"></p>
 </div>
@@ -285,16 +393,23 @@
 <li>Parameters: three distinct parameters (precipitation and snow height)</li>
 <li>Stations: single station, <code>8807</code> Achenkirch</li>
 </ul>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-10min"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Disabled as the API sometimes does include klima-v1-10min, sometimes not.</span></span>
+<span><span class="co"># TODO(R): Needs to be reported.</span></span>
+<span><span class="co">#meta &lt;- gs_metadata("historical", "klima-v1-10min")</span></span>
 <span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                        resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span>
 <span>                        start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span>
 <span>                        end         <span class="op">=</span> <span class="st">"2011-02-01"</span>,</span>
 <span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span>
 <span>                        station_ids <span class="op">=</span> <span class="fl">11803</span>,</span>
-<span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span>
+<span>                        verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Estimated number of elements to be retrieved: 52996 (1 x 4 x 13249)</span></span></code></pre>
+<pre><code><span><span class="co">## Number of requests to be performed: 1 (limit set to 2e+05)</span></span></code></pre>
+<pre><code><span><span class="co">## Calling: https://dataset.api.hub.geosphere.at/v1/station/historical/klima-v1-10min?parameters=TL,FFAM,FFX&amp;start=2010-11-01T00:00&amp;end=2011-02-01T00:00&amp;station_ids=11803</span></span></code></pre>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span>
 <span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -310,7 +425,7 @@
 <li>Stations: single station, <code>11121</code> Innsbruck Airport</li>
 </ul>
 <p><strong>WARNING:</strong> <code>resource_id = "tawes-v1-10min"</code> is not qualiy controlled and seems to provide a limited amount of data (not going too far back in time). Consider using <code>resource_id = "klima-v1-10min"</code> instead (see above) which provides long-term historical quality-controlled data. Station IDs (and available parameters) differ, tough.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ibkap</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                         resource_id <span class="op">=</span> <span class="st">"tawes-v1-10min"</span>,</span>
 <span>                         start       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">30</span>,    <span class="co"># Today - 30 days (system time)</span></span>
@@ -338,7 +453,7 @@
 <li>Stations: single station, <code>23</code> Bregenz</li>
 </ul>
 <p><strong>NOTE:</strong> Not executed; requires login; currently throws an error.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span>
 <span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                          resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span>

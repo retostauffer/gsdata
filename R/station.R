@@ -17,11 +17,14 @@
 #'        but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 #'        do not have to be evaluated.
 #' @param version integer, API version (defaults to \code{1L}).
+#' @param drop logical, if \code{TRUE} parameters and times with no data are removed
+#'        before returning the data.
 #' @param verbose logical, if set \code{TRUE} some more output will be produced.
 #' @param format \code{NULL} (default) or character string, used if \code{start}/\code{end}
 #'        are characters in a specific (non ISO) format.
 #' @param limit integer, API data request limit. If the request sent by the user
 #'        exceeds this limit, the request will be split into batches automatically.
+#'        Set to 2e5 as the limit stated on the API documentation (1e6) will not be accepted.
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
 #'
@@ -178,8 +181,10 @@
 #' @importFrom parsedate parse_iso_8601
 #' @importFrom httr GET status_code content
 #' @importFrom zoo zoo index
-gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, end = NULL, station_ids, expert = FALSE,
-                           version = 1L, verbose = FALSE, format = NULL, limit = 5e5, config = list()) {
+gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
+                           end = NULL, station_ids, expert = FALSE,
+                           version = 1L, drop = TRUE, verbose = FALSE, format = NULL,
+                           limit = 2e5, config = list()) {
 
     stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
     stopifnot("argument 'resource_id' must be character of length 1" = is.character(resource_id) & length(resource_id) == 1L)
@@ -187,6 +192,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
               is.null(parameters) || (is.character(parameters) & length(parameters) > 0))
 
     stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
+    stopifnot("argument drop must be logical TRUE or FALSE" = isTRUE(drop) || isFALSE(drop))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
 
     # Matching 'mode'.
@@ -266,9 +272,11 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
 
         stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
         if (is.character(start))
-           start <- if (is.null(format)) as.POSIXct(start) else as.POSIXct(start, format = format)
+           start <- if (is.null(format)) as.POSIXct(start, tz = "UTC") else as.POSIXct(start, format = format, tz = "UTC")
+        start <- as.POSIXct(start, tz = "UTC") # If is Date or POSIXlt
         if (is.character(end))
-           end <- if (is.null(format)) as.POSIXct(end) else as.POSIXct(end, format = format)
+           end <- if (is.null(format)) as.POSIXct(end, tz = "UTC") else as.POSIXct(end, format = format, tz = "UTC")
+        end <- as.POSIXct(end, tz = "UTC") # If is Date or POSIXlt
         stopifnot("end date must be greater than start date" = end > start)
     }
 
@@ -277,19 +285,19 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
     # (one if only one is needed) used for the request later.
     calc_batches <- function(resource_id, station_ids, parameters, start, end, limit, verbose) {
         # Calculate number of expected data points for one single time steps
-        per_step  <- length(station_ids) * (length(parameters) + 1)
-        n_steps   <- ceiling(as.double(end - start, units = "secs") / gs_temporal_interval(resource_id))
-        n_total   <- n_steps * per_step
+        per_step  <- length(station_ids) * (length(parameters) + 1) # +1 for time
+        n_steps   <- ceiling(as.double(end - start, units = "secs") / gs_temporal_interval(resource_id)) + 1
+        n_total   <- n_steps * per_step 
         if (verbose) message(sprintf("Estimated number of elements to be retrieved: %d (%d x %d x %d)",
-                                     n_total, length(station_ids), length(parameters), n_steps))
+                                     n_total, length(station_ids), length(parameters) + 1, n_steps))
         n_batches <- ceiling((n_steps * per_step) / limit)
         if (n_batches == 1) {
             res <- list(list(start = start, end = end))
         } else {
-            tmp <- seq(start, end, length.out = n_batches + 1)
+            tmp <- seq(start, end, length.out = n_batches + 1, tz = "UTC")
             res <- list()
             for (i in head(seq_len(n_batches + 1), -1)) {
-                res[[paste("batch", i, sep = "_")]] <- if (i == 1) list(start = tmp[i], end = tmp[i + 1]) else list(start = tmp[i] + 1, end = tmp[i + 1])
+                res[[paste("batch", i, sep = "_")]] <- if (i == 1) list(start = tmp[i], end = tmp[i + 1]) else list(start = tmp[i] + 60, end = tmp[i + 1])
             }
         }
         return(res)
@@ -334,7 +342,6 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
         for (rec in content$features) {
             stn <- rec$properties$station
             tmp <- lapply(rec$properties$parameters, function(x) sapply(x$data, function(y) ifelse(is.null(y), NA_real_, y)))
-            tmp <- tmp[sapply(tmp, function(x) sum(!is.na(x))) > 0]
             final[[stn]] <- c(final[[stn]], tmp)
             # Keep attributes
             coord <- st_point(unlist(rec$geometry$coordinates))
@@ -355,15 +362,28 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL, e
         return(list(attributes   = attributes,
                     observations = observations))
     }
-    comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
+    # Function for combining the data
+    ####comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
     data <- lapply(batches, get_batch)
+
+    # Remove overlapping indices as sometimes returned by the API
+    # (seems to round star/end which sometimes yields data starting
+    # before the start date defined by the user/in the batch).
+    fixindex <- function(x, ...) {
+        if (length(x) > 1)
+            for (i in seq(2L, length(x))) x[[i]] <- x[[i]][index(x[[i]]) > max(index(x[[i - 1]])), ]
+        return(x)
+    }
 
     # Combine (row-bind) data from all batches if there have been multiple
     res <- list()
     for (s in as.character(station_ids)) {
-        res[[s]] <- do.call(rbind, lapply(data, function(x, s) x$observations[[s]], s = s))
+        res[[s]] <- do.call(rbind, fixindex(lapply(data, function(x, s) x$observations[[s]], s = s)))
         # Convert index to Date if all observations belong to 00:00
         if (!is.null(res[[s]])) {
+            if (drop) res[[s]] <- res[[s]][rowSums(!is.na(coredata(res[[s]]))) > 0,
+                                           colSums(!is.na(coredata(res[[s]]))) > 0,
+                                           drop = FALSE]
             if (all(format(index(res[[s]]), "%H%M") == "0000"))
                 index(res[[s]]) <- as.Date(index(res[[s]]))
             # Appending attributes; take them from the first batch;
