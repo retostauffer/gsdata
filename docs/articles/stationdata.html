@@ -394,17 +394,15 @@
 <li>Stations: single station, <code>8807</code> Achenkirch</li>
 </ul>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Disabled as the API sometimes does include klima-v1-10min, sometimes not.</span></span>
-<span><span class="co"># TODO(R): Needs to be reported.</span></span>
-<span><span class="co">#meta &lt;- gs_metadata("historical", "klima-v1-10min")</span></span>
-<span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
-<span>                        resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span>
-<span>                        start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span>
-<span>                        end         <span class="op">=</span> <span class="st">"2011-02-01"</span>,</span>
-<span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span>
-<span>                        station_ids <span class="op">=</span> <span class="fl">11803</span>,</span>
-<span>                        verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-10min"</span><span class="op">)</span></span>
+<span><span class="va">uibk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
+<span>                       resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span>
+<span>                       start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span>
+<span>                       end         <span class="op">=</span> <span class="st">"2011-02-01"</span>,</span>
+<span>                       parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span>
+<span>                       station_ids <span class="op">=</span> <span class="fl">11803</span>,</span>
+<span>                       verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                       expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Estimated number of elements to be retrieved: 52996 (1 x 4 x 13249)</span></span></code></pre>
 <pre><code><span><span class="co">## Number of requests to be performed: 1 (limit set to 2e+05)</span></span></code></pre>
 <pre><code><span><span class="co">## Calling: https://dataset.api.hub.geosphere.at/v1/station/historical/klima-v1-10min?parameters=TL,FFAM,FFX&amp;start=2010-11-01T00:00&amp;end=2011-02-01T00:00&amp;station_ids=11803</span></span></code></pre>
@@ -454,16 +452,19 @@
 </ul>
 <p><strong>NOTE:</strong> Not executed; requires login; currently throws an error.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span>
-<span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
+<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error in gs_metadata("historical", "histalp-v1-1y"): HTTP request error: got status code504</span></span></code></pre>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                          resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span>
 <span>                          start       <span class="op">=</span> <span class="st">"1854-01-01"</span>,</span>
 <span>                          end         <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span>
 <span>                          parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R01"</span>, <span class="st">"T01"</span><span class="op">)</span>,</span>
 <span>                          station_ids <span class="op">=</span> <span class="fl">23</span>,</span>
-<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">##plot(bregenz, col = c(4, 2))</span></span></code></pre></div>
+<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error in FUN(X[[i]], ...): Request most likely too big. Server responded with: The upstream server is timing out</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">##plot(bregenz, col = c(4, 2))</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

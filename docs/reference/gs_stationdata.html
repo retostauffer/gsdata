@@ -181,7 +181,7 @@ For current limits see
 <span class="r-in"><span><span class="co"># Air temp</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">TL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  20.8  21.8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  18.8  18.8 </span>
 <span class="r-in"><span><span class="co"># Precipitation (rain)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">RR</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
@@ -305,7 +305,6 @@ For current limits see
 <span class="r-in"><span><span class="co"># meta$parameter contains available parameters,</span></span></span>
 <span class="r-in"><span><span class="co"># meta$stations  available stations</span></span></span>
 <span class="r-in"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"klima-v1-10min"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in match.arg(resource_id, unique(dataset$resource_id)):</span> 'arg' should be one of “histalp-v1-1y”, “klima-v1-1d”, “klima-v1-1h”, “klima-v1-1m”, “tawes-v1-10min”, “synop-v1-1h”</span>
 <span class="r-in"><span><span class="va">uibk</span> <span class="op">&lt;-</span>  <span class="fu">gs_stationdata</span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span></span>
 <span class="r-in"><span>                        resource_id <span class="op">=</span> <span class="st">"klima-v1-10min"</span>,</span></span>
 <span class="r-in"><span>                        start       <span class="op">=</span> <span class="st">"2010-11-01"</span>,</span></span>
@@ -313,13 +312,11 @@ For current limits see
 <span class="r-in"><span>                        parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TL"</span>, <span class="st">"FFAM"</span>, <span class="st">"FFX"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        station_ids <span class="op">=</span> <span class="fl">11803</span>,</span></span>
 <span class="r-in"><span>                        expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in FUN(X[[i]], ...):</span> An endpoint with type 'station', resource_id 'klima-v1-10min', and mode 'historical' does not exist.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Data request not successful (status code != 200)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">uibk</span>,</span></span>
 <span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'uibk' not found</span>
+<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>
@@ -345,7 +342,7 @@ For current limits see
 <span class="r-in"><span>     screens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature\nand dewpoint"</span>, <span class="st">"mean wind\nand gusts"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gs_stationdata-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="gs_stationdata-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################################################################</span></span></span>

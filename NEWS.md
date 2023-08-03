@@ -6,8 +6,8 @@
   but this leads to bad requests (exceeding API limits)
 * Adding `drop = TRUE` to `gs_datationdata()`.
 * Adding a series of basic tests for `gs_stationdata()`
-* Currently facing a strange behaviour of `ve/datasets`, see
-    <https://github.com/Geosphere-Austria/dataset-api-docs/issues/11>
+* Currently facing a strange behaviour of `v1/datasets`, see
+    <https://github.com/Geosphere-Austria/dataset-api-docs/issues/11> (**resolved**)
 
 # gsdata 0.0-5
 

@@ -2,7 +2,7 @@ Package: gsdata
 Type: Package
 Title: Accessing Data from Geosphere (ZAMG)
 Version: 0.0-6
-Date: 2023-07-31
+Date: 2023-08-03
 Authors@R: 
     person(given = "Reto", family = "Stauffer", role = c("cre", "aut"),
          email = "reto.stauffer@uibk.ac.at",
