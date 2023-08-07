@@ -151,7 +151,7 @@ is available) is returned. The name of the list corresponds to the station id re
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function is a convenience function for downloading different sets of
-station data from the GeoSphere data hub (formerly ZAMG). The API may change and additional
+station data from the GeoSphere Austria data hub (formerly ZAMG). The API may change and additional
 resources may be added, for details see
 <a href="https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html" class="external-link">https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html</a>.</p>
 <p>To see what's available call <code>gs_datasets("station")</code>.</p>
@@ -181,7 +181,7 @@ For current limits see
 <span class="r-in"><span><span class="co"># Air temp</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">TL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  18.8  18.8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  19.3  20.2 </span>
 <span class="r-in"><span><span class="co"># Precipitation (rain)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">RR</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>

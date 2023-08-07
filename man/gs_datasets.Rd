@@ -33,7 +33,7 @@ The most important information of this return is the \code{type}, \code{mode},
 as well as \code{resource_id} which is used to perform data requests.
 }
 \description{
-The GeoSphere (formerly ZAMG) datahub API provides an endpoint to get available
+The GeoSphere Austria (formerly ZAMG) datahub API provides an endpoint to get available
 datasets. This function returns a (possibly pre-filtered) \code{data.frame}
 containing the dataset \code{type}, \code{mode} and \code{resource_id} needed
 to perform the data requests (see e.g., \code{gs_stationdata()}) amongst some

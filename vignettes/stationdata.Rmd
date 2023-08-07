@@ -30,7 +30,7 @@ information about that is shown when the argument `verbose` is
 set to `TRUE` (`FALSE` by default).
 
 More information about the data sets can be found on the
-[Geosphere Austria/ZAMG Data hub website](https://data.hub.zamg.ac.at/group/stationsdaten).
+[Geosphere Austria data hub](https://data.hub.zamg.ac.at/group/stationsdaten).
 
 
 # Hourly synop observations

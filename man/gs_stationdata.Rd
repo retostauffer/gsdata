@@ -69,7 +69,7 @@ see \url{https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html}.
 }
 \details{
 This function is a convenience function for downloading different sets of
-station data from the GeoSphere data hub (formerly ZAMG). The API may change and additional
+station data from the GeoSphere Austria data hub (formerly ZAMG). The API may change and additional
 resources may be added, for details see
 \url{https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html}.
 

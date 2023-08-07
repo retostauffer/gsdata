@@ -86,7 +86,7 @@
     
     
 <p>This article contains a series of examples on how to retrieve station observations for different data sets. There is a limit on how many data can be retrieved via the API in one single call which is taken care by the function <code><a href="../reference/gs_stationdata.html">gs_stationdata()</a></code>. If the number of expected data exceeds the limit, the function will automatically split thre request in multiple calls. Some information about that is shown when the argument <code>verbose</code> is set to <code>TRUE</code> (<code>FALSE</code> by default).</p>
-<p>More information about the data sets can be found on the <a href="https://data.hub.zamg.ac.at/group/stationsdaten" class="external-link">Geosphere Austria/ZAMG Data hub website</a>.</p>
+<p>More information about the data sets can be found on the <a href="https://data.hub.zamg.ac.at/group/stationsdaten" class="external-link">Geosphere Austria data hub</a>.</p>
 <div class="section level2">
 <h2 id="hourly-synop-observations">Hourly synop observations<a class="anchor" aria-label="anchor" href="#hourly-synop-observations"></a>
 </h2>
@@ -175,7 +175,7 @@
 <p>Note that station <code>11328</code> does not provide any data for the time period specified resulting in a warning and an will return a missing value (<code>NA</code>).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">[[</span><span class="st">"11328"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## GeoSphere stationdata</span></span>
+<pre><code><span><span class="co">## GeoSphere Austria stationdata</span></span>
 <span><span class="co">## Station ID:  11328 </span></span>
 <span><span class="co">## Coordinates:  11.70528 47.53222 </span></span>
 <span><span class="co">## Parameters: </span></span>
@@ -452,19 +452,16 @@
 </ul>
 <p><strong>NOTE:</strong> Not executed; requires login; currently throws an error.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in gs_metadata("historical", "histalp-v1-1y"): HTTP request error: got status code504</span></span></code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
+<code class="sourceCode R"><span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_metadata.html">gs_metadata</a></span><span class="op">(</span><span class="st">"historical"</span>, <span class="st">"histalp-v1-1y"</span><span class="op">)</span></span>
+<span><span class="va">bregenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_stationdata.html">gs_stationdata</a></span><span class="op">(</span>mode        <span class="op">=</span> <span class="st">"historical"</span>,</span>
 <span>                          resource_id <span class="op">=</span> <span class="st">"histalp-v1-1y"</span>,</span>
 <span>                          start       <span class="op">=</span> <span class="st">"1854-01-01"</span>,</span>
 <span>                          end         <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span>
 <span>                          parameters  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R01"</span>, <span class="st">"T01"</span><span class="op">)</span>,</span>
 <span>                          station_ids <span class="op">=</span> <span class="fl">23</span>,</span>
-<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in FUN(X[[i]], ...): Request most likely too big. Server responded with: The upstream server is timing out</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##plot(bregenz, col = c(4, 2))</span></span></code></pre></div>
+<span>                          expert      <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">##plot(bregenz, col = c(4, 2))</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
