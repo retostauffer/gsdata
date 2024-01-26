@@ -10,6 +10,7 @@ gs_metadata(
   type = NULL,
   version = 1L,
   config = list(),
+  expert = FALSE,
   verbose = FALSE
 )
 }
@@ -25,6 +26,11 @@ is available in more than one type (e.g., \"grid\" and \"timeseries\").}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}
+
+\item{expert}{logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
+check if the input arguments are valid. May result in unsuccessful requests
+but increases the speed as \code{gs_datasets()} does not have to be
+called (one less API request).}
 
 \item{verbose}{logical, if set \code{TRUE} some more output will be produced.}
 }

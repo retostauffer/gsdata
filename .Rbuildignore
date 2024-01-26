@@ -2,3 +2,10 @@
 ^Makefile$
 ^_pkgdown.yml$
 ^docs$
+^contact.md
+^pkgdown
+^test.R
+
+^vignettes/datasets.Rmd
+^vignettes/metadata.Rmd
+^vignettes/stationdata.Rmd

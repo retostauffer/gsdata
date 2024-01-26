@@ -75,3 +75,128 @@ gs_temporal_interval <- function(resource_id) {
     return(res)
 }
 
+
+
+
+#' Show HTTP Error Status and Terminate
+#'
+#' This function is called whenever \code{httr::GET} returns an
+#' http status code out of the \code{200} range (success).
+#' Shows \code{\link[http]{http_status()}} code information alongside
+#' with additional messages returned by the API (if any).
+#'
+#' @param scode numeric, http status code.
+#' @param xtra \code{NULL} or named list with additional information.
+#'
+#' @return No return, will terminate R.
+#'
+#' @author Reto Stauffer
+# Show http_status message if possible.
+show_http_status_and_terminate <- function(scode, xtra = NULL) {
+
+    stopifnot(is.numeric(scode), length(scode) == 1)
+    if (scode %/% 100 == 2) return(NULL)
+    cat('---\n')
+
+    info <- tryCatch(http_status(scode),
+                     error = function(x) NULL)
+
+    # Depending on the status code these are somewhat redundant
+    if (!is.null(xtra))
+        xtra <- paste(c("  status returned by API:",
+                      sprintf("    %-20s %s", sprintf("%s:", names(xtra)), xtra)),
+                      collapse = "\n")
+    if (!is.null(info))
+        info <- paste(c("  http_status description:",
+                      sprintf("    %-20s %s", sprintf("%s:", names(info)), info)),
+                      collapse = "\n")
+
+    if (is.null(info) & is.null(xtra)) {
+        stop("HTTP request error: server returned status code ", scode)
+    } else {
+        stop(paste("HTTP request error", xtra, info, sep = "\n"))
+    }
+}
+
+#' Handling API Calls
+#' 
+#' Small helper function to handle http requests to the API.
+#'
+#' @param URL the URL to be called.
+#' @param config \code{NULL} or \code{list}, forwarded to \code{httr::GET}.
+#' @param query \code{NULL} or \code{list}, forwarded to \code{httr::GET}.
+#' @param expected_class \code{NULL} or character vector. If set, it is checked
+#'        if the returned object is of this class. If not, a warning will be thrown
+#'        (no error).
+#' @param verbose logical, shows some additional information if \code{TRUE}.
+#'
+#' @return Returns the object we get from \code{httr::content()} after a successful
+#' API call. If an error is detected, an error with additional details will be displayed.
+#'
+#' @importFrom httr GET status_code content http_status
+#' @author Reto Stauffer
+API_GET <- function(URL, config = NULL, query = NULL,
+                    expected_class = NULL, verbose = FALSE) {
+    # Checking URL
+    URL <- as.character(URL)[[1]]                    
+    stopifnot("argument `URL` is invalid" =
+              grepl("^https:\\/\\/dataset.api.hub.geosphere.at", URL))
+
+    stopifnot("argument `config` must be NULL or a list" =
+              is.null(config) || is.list(config))
+    stopifnot("argument `query` must be NULL or a list" =
+              is.null(query) || is.list(query))
+    stopifnot("argument `expected` must be NULL or character" =
+              is.null(expected_class) || is.character(expected_class))
+    stopifnot("argument `verbose` must be logical TRUE or FALSE" =
+              isTRUE(verbose) || isFALSE(verbose))
+
+
+    # Checking and executing cooldown
+    gsdata_lastcall <- getOption("gsdata.lastcall", default = Sys.time() - 1); # 1s ago
+    gsdata_cooldown <- getOption("gsdata.cooldown", default = .1) # cooldown in secs
+    # Ensure positive numeric, if there is an error or any warning we reset to default .1
+    gsdata_cooldown <- tryCatch(max(0, as.numeric(gsdata_cooldown)),
+                                warning = function(x) .1,
+                                error = function(x) .1)
+    sleep_time <- gsdata_cooldown - as.numeric(Sys.time() - gsdata_lastcall, units = "secs")
+    if (sleep_time > 0.1) {
+        if (verbose) message(sprintf("Cooldown, waiting for %.3f seconds", sleep_time))
+        Sys.sleep(sleep_time)
+    }
+
+
+    if (verbose) {
+        msgq <- if (is.list(query)) {
+            paste0("?", paste(paste(names(query), query, sep = "="), collapse = "&"))
+        } else { "" }
+        message(sprintf("Calling: %s%s", URL, msgq))
+    }
+
+    # Requesting data
+    req  <- GET(URL, config = config, query = query)
+    options("gsdata.lastcall" = Sys.time()) # Updating last call
+
+    if (!status_code(req) %/% 100 == 2) {
+        # Trying to read the response and see if the API answered
+        # with an error message (error details). If so, that will be
+        # shown, else a more generic error will be displayed.
+        tmp <- tryCatch(content(req), error = function(x) NULL)
+        show_http_status_and_terminate(status_code(req), tmp)
+    }
+
+    # Else extracting the content
+    content <- content(req)
+
+    # If a certain class is expected check and throw a warning
+    # if the object is not of the correct class.
+    if (!is.null(expected_class)) {
+        if (!inherits(content, expected_class)) {
+            warning("expected returned object from HTTP request to be of class ",
+                    paste(expected_class, collapse = ", "), " but it is of ",
+                    paste(class(content), collapse = ", "))
+        }
+    }
+
+    return(content)
+}

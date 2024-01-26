@@ -1,5 +1,5 @@
 ---
-title: "Datasets"
+title: "Stationdata"
 author: "Reto Stauffer"
 output:
   html_document:
@@ -8,16 +8,17 @@ output:
     theme: flatly
 link-citations: true
 vignette: >
-  %\VignetteIndexEntry{annex: Annex86 Data Analysis Package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{Formula}
-  %\VignetteKeywords{Annex86}
-  %\VignettePackage{annex}
+    %\VignetteIndexEntry{gsdata: Station Data}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteDepends{gsdata}
+    %\VignetteKeywords{GeoSphere, station data}
+    %\VignettePackage{gsdata}
 ---
 
 ```{r setup, include = FALSE}
 suppressPackageStartupMessages(library('zoo'))
 library("gsdata")
+options("gsdata.cooldown" = 1)
 ```
 
 This article contains a series of examples on how to retrieve
@@ -71,7 +72,6 @@ do not exist.
 
 One can, of course, get the meta information for the station and parameters
 if needed (see `gs_metdatata()` for more details):
-
 
 ```{r meta_hist_synop}
 meta <- gs_metadata(mode = "historical", resource_id = "synop-v1-1h")

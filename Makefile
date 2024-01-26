@@ -12,10 +12,14 @@ document:
 docs:
 	Rscript -e "pkgdown::build_site()"
 
+.PHONY: vignettes
+vignettes:
+	Rscript -e "devtools::build_vignettes()"
+
 install: document
 	Rscript -e "devtools::install()"
 
-check: document
+devcheck: document
 	Rscript -e "devtools::check()"
 
 test: install
@@ -26,3 +30,14 @@ testwarn: install
 coverage: install
 	Rscript -e 'covr::report(covr::package_coverage(), file = "../coverage.html")'
 
+# ---------------------------------------------------
+# R CMD build and check (--as-cran)
+# ---------------------------------------------------
+packageversion:=$(shell cat DESCRIPTION | egrep Version | sed 's/Version://g')
+
+build: document
+	cd ../ && \
+	R CMD build --no-build-vignettes gsdata
+check: build
+	cd ../ && \
+	R CMD check --as-cran gsdata_$(shell printf "%s"${packageversion}).tar.gz

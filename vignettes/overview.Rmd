@@ -2,13 +2,12 @@
 title: "Datasets"
 author: "Reto Stauffer"
 output:
-  html_document:
+  rmarkdown::html_vignette:
+    highlight: monochrome
     toc: true
-    toc_float: true
-    theme: flatly
 link-citations: true
 vignette: >
-    %\VignetteIndexEntry{gsdata: Datasets}
+    %\VignetteIndexEntry{Package Overview}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteDepends{gsdata}
     %\VignetteKeywords{GeoSphere, datasets}
@@ -18,6 +17,9 @@ vignette: >
 ```{r, include = FALSE}
 library("gsdata")
 ```
+
+TODO(R): Ovrview vignett for R CMD build; the only vignette we'll
+include (rest is pkgdown content).
 
 Returns available data sets. Note that the current default is set to
 `type = "station"` (see `gs_datasets()`) as this package only allows

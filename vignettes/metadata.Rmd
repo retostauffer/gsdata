@@ -1,5 +1,5 @@
 ---
-title: "Datasets"
+title: "Metadata"
 author: "Reto Stauffer"
 output:
   html_document:
@@ -8,15 +8,16 @@ output:
     theme: flatly
 link-citations: true
 vignette: >
-  %\VignetteIndexEntry{annex: Annex86 Data Analysis Package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{Formula}
-  %\VignetteKeywords{Annex86}
-  %\VignettePackage{annex}
+    %\VignetteIndexEntry{gsdata: Metadata}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteDepends{gsdata}
+    %\VignetteKeywords{GeoSphere, meta data}
+    %\VignettePackage{gsdata}
 ---
 
 ```{r, include = FALSE}
 library("gsdata")
+options("gsdata.cooldown" = 1)
 ```
 
 Given `mode` and the `resource_id` are known (see `gs_datasets()`)

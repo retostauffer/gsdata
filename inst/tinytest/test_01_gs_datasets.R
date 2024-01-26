@@ -4,6 +4,8 @@
 
 if (interactive()) library("tinytest")
 
+options("gsdata.cooldown" = 0.5)
+
 expect_silent(ds <- gs_datasets(),
                  info = "Calling dataset endpoint")
 expect_inherits(ds, "data.frame",

@@ -8,6 +8,10 @@
 #' @param version integer, API version (defaults to \code{1L}).
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
+#' @param expert logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
+#'        check if the input arguments are valid. May result in unsuccessful requests
+#'        but increases the speed as \code{gs_datasets()} does not have to be
+#'        called (one less API request).
 #' @param verbose logical, if set \code{TRUE} some more output will be produced.
 #'
 #' @return Named list with a series of information about the dataset.
@@ -50,66 +54,69 @@
 #'
 #' @author Reto Stauffer
 #' @export
-#' @importFrom httr GET status_code content
 #' @importFrom sf st_as_sf
 #' @importFrom parsedate parse_iso_8601
-gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = list(), verbose = FALSE) {
+gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = list(), expert = FALSE, verbose = FALSE) {
 
     # Getting available dataset dynamically; used to perform 'sanity check'
     # (whether or not the defined mode/resource_id is a valid identifier)
-    stopifnot("argument 'mode' must be character of length 1" = is.character(mode) && length(mode) == 1)
-    stopifnot("argument 'resource_id' must be character of length 1" = is.character(resource_id) && length(resource_id) == 1)
-    stopifnot("argument 'type' must be NULL or character of length 1" = is.null(type) || (is.character(type) && length(type) == 1L))
-    stopifnot("argument 'verbose' must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
+    stopifnot("argument 'mode' must be character of length 1" =
+              is.character(mode) && length(mode) == 1)
+    stopifnot("argument 'resource_id' must be character of length 1" =
+              is.character(resource_id) && length(resource_id) == 1)
+    stopifnot("argument 'type' must be NULL or character of length 1" =
+              is.null(type) || (is.character(type) && length(type) == 1L))
+    stopifnot("argument 'expert' must be logical TRUE or FALSE" =
+              isTRUE(expert) || isFALSE(expert))
+    stopifnot("argument 'verbose' must be logical TRUE or FALSE" =
+              isTRUE(verbose) || isFALSE(verbose))
 
-    dataset     <- gs_datasets(version = version)
-    mode        <- match.arg(mode, unique(dataset$mode))
-    resource_id <- match.arg(resource_id, unique(dataset$resource_id))
-    if (!is.null(type)) type <- match.arg(type, unique(dataset$type))
+    # Check if mode/resource_id is a valid combination
+    if (!expert) {
+        dataset     <- gs_datasets(version = version)
+        mode        <- match.arg(mode, unique(dataset$mode))
+        resource_id <- match.arg(resource_id, unique(dataset$resource_id))
+        if (!is.null(type)) type <- match.arg(type, unique(dataset$type))
 
-    # Checking available resource ids. Enforcing one of the types defined below
-    dataset <- dataset[dataset$mode == mode & dataset$resource_id == resource_id, ]
-    if (!is.null(type)) dataset <- dataset[dataset$type == type, ]
+        # Checking available resource ids. Enforcing one of the types defined below
+        dataset <- dataset[dataset$mode == mode & dataset$resource_id == resource_id, ]
+        if (!is.null(type)) dataset <- dataset[dataset$type == type, ]
 
-    # More than one match?
-    if (nrow(dataset) > 1L && is.null(type)) {
-        stop("Found ", nrow(dataset), " datasets matching the input arguments. ",
-             "Please specify the 'type' argument.")
+        # More than one match?
+        if (nrow(dataset) > 1L && is.null(type)) {
+            stop("Found ", nrow(dataset), " datasets matching the input arguments. ",
+                 "Please specify the 'type' argument.")
+        }
+        if (nrow(dataset) == 0) {
+            stop("Could not find data set for station with mode = \"", mode, "\" ",
+                 "and resource_id = \"", resource_id, "\" and type = \"", type, "\"", sep = "")
+        } else if (nrow(dataset) > 1) {
+            stop("Multiple matches; should not happen!")
+        }
+        dataset <- as.list(dataset)
+    } else {
+        # Ensure mode/resource_id are characters of length 1
+        stopifnot("argument `mode` must be character length 1" = 
+                  is.character(mode) && length(mode) == 1)
+        stopifnot("argument `resource_id` must be character length 1" = 
+                  is.character(resource_id) && length(resource_id) == 1)
+        # Guess
+        dataset <- list(url = paste(gs_baseurl(version), "station", mode, resource_id, sep = "/"))
     }
-    if (nrow(dataset) == 0) {
-        stop("Could not find data set for station with mode = \"", mode, "\" ",
-             "and resource_id = \"", resource_id, "\" and type = \"", type, "\"", sep = "")
-    } else if (nrow(dataset) > 1) {
-        stop("Multiple matches; should not happen!")
-    }
-    dataset <- as.list(dataset)
-
-    # Downloading meta data
-    URL <- paste(dataset$url, "metadata", sep = "/")
 
     # Verbosity
     if (verbose)
         message("Requesting data for mode = \"", mode,
-                "\" and resource_id = \"", resource_id, "\"\nCalling: ", URL, sep = "")
+                "\" and resource_id = \"", resource_id, "\"", sep = "")
 
-    # Performing request
-    req <- GET(URL, config = config)
-    if (!status_code(req) == 200) {
-        tmp <- try(content(req))
-        if (is.list(tmp) && !is.null(tmp$detail[[1]]$msg)) {
-            stop(tmp$detail[[1]]$msg)
-        } else {
-            stop("HTTP request error: got status code", status_code(req))
-        }
-    }
-    res <- content(req)
-    if (inherits(res, "xml_document")) 
-        stop("HTTP request returned HTML; data set requires login (todo)")
-    res$url <- URL # appending API endpoint URL
+    # Downloading meta data
+    res <- API_GET(paste(dataset$url, "metadata", sep = "/"),
+                   config = config, query = NULL, verbose = verbose)
 
     # Evaluate result
     res$parameters <- do.call(rbind, lapply(res$parameters, as.data.frame))
-    res$stations   <- do.call(rbind, lapply(res$stations, function(x) as.data.frame(lapply(x, function(x) ifelse(is.null(x), NA, x)))))
+    res$stations   <- do.call(rbind, lapply(res$stations,
+        function(x) as.data.frame(lapply(x, function(x) ifelse(is.null(x), NA, x)))))
 
     # Double-check if my format specification below is OK
     stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_from)))
@@ -121,6 +128,6 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
 
     # Convert to sf data.frame
     res$stations <- st_as_sf(res$stations, coords = c("lon", "lat"), crs = 4326)
-    return(res)
 
+    return(res)
 }

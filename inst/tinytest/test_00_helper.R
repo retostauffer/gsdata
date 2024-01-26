@@ -4,6 +4,9 @@
 
 if (interactive()) library("tinytest")
 
+# -------------------------------------------------------
+# Temporal interval 'decoder'
+# -------------------------------------------------------
 # Testing extrating temporal interval from resource ID
 expect_error(gs_temporal_interval())
 expect_error(gs_temporal_interval(3))
@@ -33,3 +36,36 @@ expect_silent(t <- gs_temporal_interval(tmp),
               info = "Checking correct usage.")
 expect_identical(t, rep(c(366L * 86400L, 31L * 86400L), 2),
                  info = "Checking for correct return and correct calculation (3/3)")
+
+
+# -------------------------------------------------------
+# Show http status and terminate
+# -------------------------------------------------------
+expect_error(gsdata:::show_http_status_and_terminate(),
+              info = "Testing usage - no input")
+expect_error(gsdata:::show_http_status_and_terminate(1:2),
+              info = "Testing usage - wrong input")
+expect_error(gsdata:::show_http_status_and_terminate("foo"),
+              info = "Testing usage - wrong input")
+expect_silent(gsdata:::show_http_status_and_terminate(200),
+              info = "Testing behaviour if status code is in range 200")
+expect_silent(gsdata:::show_http_status_and_terminate(201),
+              info = "Testing behaviour if status code is in range 200")
+expect_identical(gsdata:::show_http_status_and_terminate(200), NULL,
+              info = "Return NULL if status code is in the 200 range")
+
+expect_error(gsdata:::show_http_status_and_terminate(400),
+             pattern = ".*Client error.*Bad Request.*",
+             info = "Testing error message for status code 400; no xtra")
+expect_error(gsdata:::show_http_status_and_terminate(400),
+             pattern = "http_status description.*Client error.*Bad Request.*",
+             info = "Testing error message for status code 400; no xtra")
+expect_error(gsdata:::show_http_status_and_terminate(400, list(xtra = "custom error")),
+             pattern = "HTTP request error.*status returned by API.*xtra:.*custom error.*Client error.*Bad Request.*",
+             info = "Testing error message for status code 400; with xtra")
+expect_error(gsdata:::show_http_status_and_terminate(99999),
+             pattern = "HTTP request error: server returned status code 99999",
+             info = "Testing status code not recognized by http_status.")
+
+
+

@@ -4,6 +4,8 @@
 
 if (interactive()) library("tinytest")
 
+options("gsdata.cooldown" = 0.5)
+
 # Misuse
 expect_error(do.call(gs_stationdata, tmp),
              info = "Stations do not exist")

@@ -36,7 +36,7 @@ Not needed (ignored) when \code{mode = "current"}.}
 \item{expert}{logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
 check if the input arguments are valid. May result in unsuccessful requests
 but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
-do not have to be evaluated.}
+do not have to be called (two API requests less).}
 
 \item{version}{integer, API version (defaults to \code{1L}).}
 
@@ -68,9 +68,9 @@ Accessing the API endpoint \code{v<version>/station},
 see \url{https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html}.
 }
 \details{
-This function is a convenience function for downloading different sets of
-station data from the GeoSphere Austria data hub (formerly ZAMG). The API may change and additional
-resources may be added, for details see
+This function is a convenience function for downloading different
+sets of station data from the GeoSphere Austria data hub (formerly ZAMG).
+The API may change and additional resources may be added, for details see
 \url{https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html}.
 
 To see what's available call \code{gs_datasets("station")}.
@@ -79,8 +79,6 @@ The API has a limit for the number of elements for one request. The calculation
 is based on the number of expecte elements (i.e., number of stations times number
 of parameters times number of time steps). This function will pre-calculate the number
 of expected elements and split the request into batches along the time dimension - if needed.
-For current limits see
-\url{https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request_size_limit.html}.
 }
 \examples{
 ######################################################################

@@ -15,7 +15,7 @@
 #' @param expert logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
 #'        check if the input arguments are valid. May result in unsuccessful requests
 #'        but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
-#'        do not have to be evaluated.
+#'        do not have to be called (two API requests less).
 #' @param version integer, API version (defaults to \code{1L}).
 #' @param drop logical, if \code{TRUE} parameters and times with no data are removed
 #'        before returning the data.
@@ -28,9 +28,9 @@
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
 #'
-#' @details This function is a convenience function for downloading different sets of
-#' station data from the GeoSphere Austria data hub (formerly ZAMG). The API may change and additional
-#' resources may be added, for details see
+#' @details This function is a convenience function for downloading different
+#' sets of station data from the GeoSphere Austria data hub (formerly ZAMG).
+#' The API may change and additional resources may be added, for details see
 #' <https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html>.
 #'
 #' To see what's available call \code{gs_datasets("station")}.
@@ -39,9 +39,6 @@
 #' is based on the number of expecte elements (i.e., number of stations times number
 #' of parameters times number of time steps). This function will pre-calculate the number
 #' of expected elements and split the request into batches along the time dimension - if needed.
-#' For current limits see
-#' <https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request_size_limit.html>.
-#'
 #' @return If only data for one single station (\code{length(station_ids) == 1}) is requested,
 #' a \code{zoo} object will be returned if data is available. If no data is available,
 #' \code{NULL} will be returned.
@@ -179,20 +176,21 @@
 #' @importFrom utils head tail
 #' @importFrom sf st_point
 #' @importFrom parsedate parse_iso_8601
-#' @importFrom httr GET status_code content
-#' @importFrom zoo zoo index
+#' @importFrom zoo zoo index coredata
 gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
                            end = NULL, station_ids, expert = FALSE,
                            version = 1L, drop = TRUE, verbose = FALSE, format = NULL,
                            limit = 2e5, config = list()) {
 
-    stopifnot("argument 'mode' must be character of length 1" = is.character(mode) & length(mode) == 1L)
-    stopifnot("argument 'resource_id' must be character of length 1" = is.character(resource_id) & length(resource_id) == 1L)
+    stopifnot("argument 'mode' must be character of length 1" =
+              is.character(mode) & length(mode) == 1L)
+    stopifnot("argument 'resource_id' must be character of length 1" =
+              is.character(resource_id) & length(resource_id) == 1L)
     stopifnot("argument 'parameters' must be NULL or a character vector of length > 0" =
               is.null(parameters) || (is.character(parameters) & length(parameters) > 0))
 
-    stopifnot("argument expert must be logical TRUE or FALSE" = isTRUE(expert) || isFALSE(expert))
-    stopifnot("argument drop must be logical TRUE or FALSE" = isTRUE(drop) || isFALSE(drop))
+    stopifnot("argument expert must be logical TRUE or FALSE"  = isTRUE(expert)  || isFALSE(expert))
+    stopifnot("argument drop must be logical TRUE or FALSE"    = isTRUE(drop)    || isFALSE(drop))
     stopifnot("argument verbose must be logical TRUE or FALSE" = isTRUE(verbose) || isFALSE(verbose))
 
     # Matching 'mode'.
@@ -325,15 +323,8 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
             tmp <- paste(names(tmp), unname(tmp), sep = "=", collapse = "&")
             message("Calling: ", dataset$url, "?", tmp, sep = "")
         }
-        req     <- GET(dataset$url, query = query, config = config)
-        content <- content(req)
-        if (!status_code(req) == 200) {
-            if (is.list(content) && "message" %in% names(content) && grepl("timing out", content$message)) {
-                stop("Request most likely too big. Server responded with: ", content$message)
-            } else {
-                stop(content, "\nData request not successful (status code != 200)")
-            }
-        }
+            # Downloading meta data
+        content <- API_GET(dataset$url, config = config, query = query, verbose = verbose)
     
         # Extracting data (lists)
         final      <- list() # To store data
@@ -363,7 +354,6 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
                     observations = observations))
     }
     # Function for combining the data
-    ####comb <- function(s) do.call(rbind, lapply(data, function(x, s) x[[s]], s = s))
     data <- lapply(batches, get_batch)
 
     # Remove overlapping indices as sometimes returned by the API
