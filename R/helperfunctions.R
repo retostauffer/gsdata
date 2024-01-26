@@ -82,7 +82,7 @@ gs_temporal_interval <- function(resource_id) {
 #'
 #' This function is called whenever \code{httr::GET} returns an
 #' http status code out of the \code{200} range (success).
-#' Shows \code{\link[http]{http_status()}} code information alongside
+#' Shows \code{\link[httr]{http_status}} code information alongside
 #' with additional messages returned by the API (if any).
 #'
 #' @param scode numeric, http status code.

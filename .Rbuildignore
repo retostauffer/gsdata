@@ -9,3 +9,5 @@
 ^vignettes/datasets.Rmd
 ^vignettes/metadata.Rmd
 ^vignettes/stationdata.Rmd
+^doc$
+^Meta$

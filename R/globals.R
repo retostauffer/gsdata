@@ -1,3 +1,3 @@
 
 # Global bindings for package checks
-utils::globalVariables(c("valid_from", "valid_to", "id", "index"))
+utils::globalVariables(c("valid_from", "valid_to", "id"))

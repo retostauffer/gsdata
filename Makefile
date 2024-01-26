@@ -35,7 +35,7 @@ coverage: install
 # ---------------------------------------------------
 packageversion:=$(shell cat DESCRIPTION | egrep Version | sed 's/Version://g')
 
-build: document
+build: document vignettes
 	cd ../ && \
 	R CMD build --no-build-vignettes gsdata
 check: build
