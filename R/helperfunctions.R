@@ -3,19 +3,21 @@
 
 #' Getting API Base URL
 #'
-#' Just returns the base URL for API requests
+#' Just returns the base URL for API requests. Package developed
+#' for API version 1; can technically be overruled by setting
+#' \code{options("gsdata.apiversion" = 2L)}.
 #'
-#' @param version integer, defaults to 1.
 #' @return String, base URL for the API.
 #'
 #' @author Reto Stauffer
-gs_baseurl <- function(version = 1L) {
-    stopifnot("version must be numeric" = is.numeric(version),
-              "version must have length 1" = length(version) == 1)
+gs_baseurl <- function() {
+    version <- getOption("gsdata.apiversion", default = 1L)
+    stopifnot("gsdata.apiversion must be numeric" = is.numeric(version),
+              "gsdata.apiversion must have length 1" = length(version) == 1)
     version <- as.integer(version)
-    stopifnot("version must be larger or equal to 1" = version >= 1)
+    stopifnot("gsdata.apiversion must be larger or equal to 1" = version >= 1)
 
-    sprintf("https://dataset.api.hub.geosphere.at/v%d", version)
+    return(sprintf("https://dataset.api.hub.geosphere.at/v%d", version))
 }
 
 #' Extract/Calculate Temporal Interval
@@ -199,4 +201,25 @@ API_GET <- function(URL, config = NULL, query = NULL,
     }
 
     return(content)
+}
+
+
+# Helper function to check that the user input for 'start' and 'end'
+# is correct (convertable and end > start)
+#
+# Returns a list with $start and $end if no errors are found.
+check_start_end_date <- function(start, end, format) {
+    stopifnot("argument 'start' of wrong type" = inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
+    stopifnot("argument 'end' of wrong type"   = inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
+
+    stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
+    if (is.character(start))
+       start <- if (is.null(format)) as.POSIXct(start, tz = "UTC") else as.POSIXct(start, format = format, tz = "UTC")
+    start <- as.POSIXct(start, tz = "UTC") # If is Date or POSIXlt
+    if (is.character(end))
+       end <- if (is.null(format)) as.POSIXct(end, tz = "UTC") else as.POSIXct(end, format = format, tz = "UTC")
+    end <- as.POSIXct(end, tz = "UTC") # If is Date or POSIXlt
+    stopifnot("end date must be greater than start date" = end > start)
+
+    return(list(start = start, end = end))
 }

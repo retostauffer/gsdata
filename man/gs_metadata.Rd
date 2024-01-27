@@ -8,7 +8,6 @@ gs_metadata(
   mode,
   resource_id,
   type = NULL,
-  version = 1L,
   config = list(),
   expert = FALSE,
   verbose = FALSE
@@ -21,8 +20,6 @@ gs_metadata(
 
 \item{type}{\code{NULL} or character. Only required if a data set
 is available in more than one type (e.g., \"grid\" and \"timeseries\").}
-
-\item{version}{integer, API version (defaults to \code{1L}).}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}

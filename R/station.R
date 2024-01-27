@@ -2,7 +2,7 @@
 
 #' Downloading Station Data
 #'
-#' Accessing the API endpoint \code{v<version>/station},
+#' Accessing the API endpoint \code{v1/station},
 #' see <https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html>.
 #'
 #' @param mode character, specify mode of data.
@@ -16,7 +16,6 @@
 #'        check if the input arguments are valid. May result in unsuccessful requests
 #'        but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 #'        do not have to be called (two API requests less).
-#' @param version integer, API version (defaults to \code{1L}).
 #' @param drop logical, if \code{TRUE} parameters and times with no data are removed
 #'        before returning the data.
 #' @param verbose logical, if set \code{TRUE} some more output will be produced.
@@ -177,7 +176,7 @@
 #' @importFrom zoo zoo index coredata
 gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
                            end = NULL, station_ids, expert = FALSE,
-                           version = 1L, drop = TRUE, verbose = FALSE, format = NULL,
+                           drop = TRUE, verbose = FALSE, format = NULL,
                            limit = 2e5, config = list()) {
 
     stopifnot("argument 'mode' must be character of length 1" =
@@ -194,7 +193,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
     # Matching 'mode'.
     match_mode <- function(mode, known = c("current", "historical")) {
         res <- tryCatch(match.arg(mode, known), error = function(x) FALSE)
-        if (isFALSE(res)) match.arg(mode, gs_datasets()$mode) else res
+        if (isFALSE(res)) match.arg(mode, gs_datasets(type = "station")$mode) else res
     }
     mode <- match_mode(mode)
 
@@ -216,7 +215,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
         dataset <- list(url = paste(gs_baseurl(), "station", mode, resource_id, sep = "/"))
     } else {
         # Check if the combination is valid and what the URL is
-        dataset <- gs_datasets(mode = mode, type = "station", version = version)
+        dataset <- gs_datasets(mode = mode, type = "station")
 
         # Sanity checks
         mode        <- match.arg(mode, unique(dataset$mode))
@@ -225,21 +224,24 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
         # Checking available resource ids. Enforcing one of the types defined below
         idx <- which(dataset$mode == mode & dataset$resource_id == resource_id)
         if (!length(idx) == 1)
-            stop("Could not find data set for station with `mode = \"", mode, "\"` and `resource_id = \"", resource_id, "\" `")
+            stop("Could not find data set for station with `mode = \"", mode,
+                 "\"` and `resource_id = \"", resource_id, "\" `")
         dataset <- as.list(dataset[idx, ])
 
         # Loading meta data
-        meta <- gs_metadata(mode, resource_id, version = version)
+        meta <- gs_metadata(mode, resource_id, "station")
 
         # Checking parameters argument
-        if (is.null(parameters)) parameters <- meta$parameters$name[!meta$parameters$name %in% parameters_to_ignore]
+        if (is.null(parameters))
+            parameters <- meta$parameters$name[!meta$parameters$name %in% parameters_to_ignore]
         idx <- which(!parameters %in% unique(meta$parameters$name))
+
+        msg <- sprintf("Check `gs_metadata(\"%s\", \"%s\", \"%s\")$parameters`",
+                        mode, resource_id, "station")
         if (length(idx) > 0)
             stop(sprintf("Parameter%s ", ifelse(length(idx) > 1, "s", "")),
                  paste(parameters[idx], collapse = ", "), " do do not exist.\n",
-                 sprintf("Check `gs_metadata(\"%s\", \"%s\", version = %d)$parameters`",
-                         mode, resource_id, version),
-                 " to get a list of all availalbe parameters for this data set.")
+                 msg, " to get a list of all availalbe parameters for this data set.")
 
         # Checking stations argument
         stopifnot(is.numeric(station_ids),  length(station_ids) >= 1)
@@ -248,9 +250,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
         if (length(idx) > 0)
             stop(sprintf("Stations%s ", ifelse(length(idx) > 1, "s", "")),
                  paste(station_ids[idx], collapse = ", "), " do do not exist.\n",
-                 sprintf("Check `gs_metadata(\"%s\", \"%s\", version = %d)$stations`",
-                         mode, resource_id, version),
-                 " to get a list of all availalbe stations for this data set.")
+                 msg, " to get a list of all availalbe stations for this data set.")
 
     }
 
@@ -260,20 +260,10 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
     if (mode == "current") {
         if ((!is.null(start) | !is.null(end)) & verbose)
             message("Argument 'start' and 'end' will be ignored for mode = '", mode, "'", sep = "")
-        start <- Sys.Date() - 1
-        end   <- Sys.Date()
+        start <- Sys.Date() - 1; end   <- Sys.Date()
     } else {
-        stopifnot("argument 'start' of wrong type" = inherits(start, c("character", "Date", "POSIXt")), length(start) == 1L)
-        stopifnot("argument 'end' of wrong type"   = inherits(end, c("character", "Date", "POSIXt")), length(end) == 1L)
-
-        stopifnot(inherits(format, c("NULL", "character")), is.null(format) || length(format) == 1L)
-        if (is.character(start))
-           start <- if (is.null(format)) as.POSIXct(start, tz = "UTC") else as.POSIXct(start, format = format, tz = "UTC")
-        start <- as.POSIXct(start, tz = "UTC") # If is Date or POSIXlt
-        if (is.character(end))
-           end <- if (is.null(format)) as.POSIXct(end, tz = "UTC") else as.POSIXct(end, format = format, tz = "UTC")
-        end <- as.POSIXct(end, tz = "UTC") # If is Date or POSIXlt
-        stopifnot("end date must be greater than start date" = end > start)
+        tmp   <- check_start_end_date(start, end, format)
+        start <- tmp$start; end <- tmp$end
     }
 
     # To avoid running into the API data request limitation we calculate

@@ -5,7 +5,6 @@
 #' @param resource_id character, specify resource identifier of data.
 #' @param type \code{NULL} or character. Only required if a data set
 #'        is available in more than one type (e.g., \"grid\" and \"timeseries\").
-#' @param version integer, API version (defaults to \code{1L}).
 #' @param config empty list by default; can be a named list to be fowrarded
 #'        to the \code{httr::GET} request if needed.
 #' @param expert logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
@@ -56,7 +55,7 @@
 #' @export
 #' @importFrom sf st_as_sf
 #' @importFrom parsedate parse_iso_8601
-gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = list(), expert = FALSE, verbose = FALSE) {
+gs_metadata <- function(mode, resource_id, type = NULL, config = list(), expert = FALSE, verbose = FALSE) {
 
     # Getting available dataset dynamically; used to perform 'sanity check'
     # (whether or not the defined mode/resource_id is a valid identifier)
@@ -73,7 +72,7 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
 
     # Check if mode/resource_id is a valid combination
     if (!expert) {
-        dataset     <- gs_datasets(version = version)
+        dataset     <- gs_datasets()
         mode        <- match.arg(mode, unique(dataset$mode))
         resource_id <- match.arg(resource_id, unique(dataset$resource_id))
         if (!is.null(type)) type <- match.arg(type, unique(dataset$type))
@@ -101,7 +100,7 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
         stopifnot("argument `resource_id` must be character length 1" = 
                   is.character(resource_id) && length(resource_id) == 1)
         # Guess
-        dataset <- list(url = paste(gs_baseurl(version), "station", mode, resource_id, sep = "/"))
+        dataset <- list(url = paste(gs_baseurl(), "station", mode, resource_id, sep = "/"))
     }
 
     # Verbosity
@@ -113,21 +112,59 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
     res <- API_GET(paste(dataset$url, "metadata", sep = "/"),
                    config = config, query = NULL, verbose = verbose)
 
-    # Evaluate result
-    res$parameters <- do.call(rbind, lapply(res$parameters, as.data.frame))
-    res$stations   <- do.call(rbind, lapply(res$stations,
+    # Prepare metadata (differs between types)
+    prep_fun <- get(sprintf("prep_metadata_%s", type))
+    res      <- tryCatch(prep_fun(res),
+                         error = function(e) stop(sprintf("function prep_metadata_%s not defined", type)))
+
+    return(res)
+}
+
+
+prep_metadata_station <- function(x) {
+    x$parameters <- do.call(rbind, lapply(x$parameters, as.data.frame))
+    x$stations   <- do.call(rbind, lapply(x$stations,
         function(x) as.data.frame(lapply(x, function(x) ifelse(is.null(x), NA, x)))))
 
     # Double-check if my format specification below is OK
-    stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_from)))
-    stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_to)))
-    res$stations <- transform(res$stations,
+    stopifnot("unexpected time format" = all(grepl("\\+00:00$", x$stations$valid_from)))
+    stopifnot("unexpected time format" = all(grepl("\\+00:00$", x$stations$valid_to)))
+    fmt <- "%Y-%m-%dT%H:%M+00:00"
+    x$stations <- transform(x$stations,
                               id         = as.integer(id),
-                              valid_from = as.POSIXct(valid_from, format = "%Y-%m-%dT%H:%M+00:00"),
-                              valid_to   = as.POSIXct(valid_to,   format = "%Y-%m-%dT%H:%M+00:00"))
+                              valid_from = as.POSIXct(valid_from, tz = "UTC", format = fmt),
+                              valid_to   = as.POSIXct(valid_to,   tz = "UTC", format = fmt))
 
     # Convert to sf data.frame
-    res$stations <- st_as_sf(res$stations, coords = c("lon", "lat"), crs = 4326)
+    x$stations <- st_as_sf(x$stations, coords = c("lon", "lat"), crs = 4326)
+    return(x)
+}
 
-    return(res)
+
+#' @importFrom sf st_bbox st_crs
+prep_metadata_grid <- function(x) {
+    x$parameters <- do.call(rbind, lapply(x$parameters, as.data.frame))
+
+    stopifnot("unexpected time format" = all(grepl("\\+00:00$", x$start_time)))
+    stopifnot("unexpected time format" = all(grepl("\\+00:00$", x$end_time)))
+    fmt <- "%Y-%m-%dT%H:%M+00:00"
+    x$start_time <- as.POSIXct(x$start_time, tz = "UTC", format = fmt)
+    x$end_time   <- as.POSIXct(x$end_time,   tz = "UTC", format = fmt)
+
+    # Convert CRS
+    x$crs <- st_crs(x$crs)
+
+    # Create st_bbox for 'bbox', 'bbox_outer' and native grid 'grid_bounds'
+    x$bbox       <- st_bbox(c(xmin = x$bbox[[2]], xmax = x$bbox[[4]],
+                              ymin = x$bbox[[1]], ymax = x$bbox[[3]]),
+                            crs = st_crs(4326))
+
+    x$bbox_outer <- st_bbox(c(xmin = x$bbox_outer[[2]], xmax = x$bbox_outer[[4]],
+                              ymin = x$bbox_outer[[1]], ymax = x$bbox_outer[[3]]),
+                            crs = st_crs(4326))
+
+    x$grid_bounds <- st_bbox(c(xmin = x$grid_bounds[[2]], xmax = x$grid_bounds[[4]],
+                               ymin = x$grid_bounds[[1]], ymax = x$grid_bounds[[3]]),
+                             crs = x$crs)
+    return(x)
 }

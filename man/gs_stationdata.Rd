@@ -12,7 +12,6 @@ gs_stationdata(
   end = NULL,
   station_ids,
   expert = FALSE,
-  version = 1L,
   drop = TRUE,
   verbose = FALSE,
   format = NULL,
@@ -38,8 +37,6 @@ check if the input arguments are valid. May result in unsuccessful requests
 but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
 do not have to be called (two API requests less).}
 
-\item{version}{integer, API version (defaults to \code{1L}).}
-
 \item{drop}{logical, if \code{TRUE} parameters and times with no data are removed
 before returning the data.}
 
@@ -64,7 +61,7 @@ When multiple stations are requested a list of \code{zoo} object (or \code{NULL}
 is available) is returned. The name of the list corresponds to the station id requested.
 }
 \description{
-Accessing the API endpoint \code{v<version>/station},
+Accessing the API endpoint \code{v1/station},
 see \url{https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html}.
 }
 \details{

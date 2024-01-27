@@ -4,21 +4,13 @@
 \alias{gs_datasets}
 \title{Getting Available Datasets}
 \usage{
-gs_datasets(
-  type = "station",
-  mode = NULL,
-  version = 1L,
-  config = list(),
-  verbose = FALSE
-)
+gs_datasets(type = NULL, mode = NULL, config = list(), verbose = FALSE)
 }
 \arguments{
 \item{type}{\code{NULL} or character of length \code{1} to filter the request.}
 
 \item{mode}{\code{NULL} or character of length \code{1} to filter the request.
 Currently defaults to \code{mode = "station"}.}
-
-\item{version}{integer, API version (defaults to 1).}
 
 \item{config}{empty list by default; can be a named list to be fowrarded
 to the \code{httr::GET} request if needed.}
