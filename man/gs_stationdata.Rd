@@ -95,6 +95,7 @@ sapply(innsbruck, function(x) x$TL)
 # Precipitation (rain)
 sapply(innsbruck, function(x) x$RR)
 
+\dontrun{
 ######################################################################
 ## Example for synop data
 
@@ -192,19 +193,16 @@ plot(uibk,
 
 ######################################################################
 ## Example for annual histalp data
-## Requires login; will result in an error for now (todo)
-\dontrun{
-    gs_metadata("historical", "histalp-v1-1y")
-    bregenz <- gs_stationdata(mode        = "historical",
-                              resource_id = "histalp-v1-1y",
-                              start       = "1854-01-01",
-                              end         = "2022-01-01",
-                              parameters  = c("R01", "T01"),
-                              station_ids = 23,
-                              expert      = TRUE)
-    plot(bregenz, col = c(4, 2))
+gs_metadata("historical", "histalp-v1-1y")
+bregenz <- gs_stationdata(mode        = "historical",
+                          resource_id = "histalp-v1-1y",
+                          start       = "1854-01-01",
+                          end         = "2022-01-01",
+                          parameters  = c("R01", "T01"),
+                          station_ids = 23,
+                          expert      = TRUE)
+plot(bregenz, col = c(4, 2))
 }
-
 }
 \author{
 Reto Stauffer

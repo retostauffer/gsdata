@@ -45,7 +45,7 @@ More detailed overviews and examples are provided in the
 # Installation
 
 The stable release of `gsdata` is hosted on the Comprehensive R Archive Network
-(CRAN) at <https://CRAN.R-project.org/packge=gsdata> and can be installed via
+(CRAN) and can be installed via
 
 ```{r, eval = FALSE}
 install.packages("gsdata")

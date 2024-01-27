@@ -3,14 +3,13 @@ Type: Package
 Title: Interface to the GeoSphere Austria DataHub API (Data Access)
 Version: 0.0-7
 Date: 2024-01-27
-Authors@R: 
-    person(given = "Reto", family = "Stauffer", role = c("cre", "aut"),
-         email = "reto.stauffer@uibk.ac.at",
-         comment = c(ORCID = "0000-0002-3798-5507"))
+Authors@R: person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
+                  email = "reto.stauffer@uibk.ac.at",
+                  comment = c(ORCID = "0000-0002-3798-5507"))
 Maintainer: Reto Stauffer <reto.stauffer@uibk.ac.at>
 Depends: httr, zoo, sf, parsedate
 Suggests: utils, ncdf4, stars, knitr, rmarkdown, tinytest
-Description: Package to download data from the Geosphere data hub (Austrian National Weather Service) which is the data provider. Currently solely allows to download station data (no gridded data). More details about the data sets can be found on <https://data.hub.geosphere.at/> as well as in the API documentation available via <https://dataset.api.hub.geosphere.at/v1/docs>.
+Description: Package to download data from the GeoSphere data hub (Austrian National Weather Service) which is the data provider. Currently solely allows to download station data (no gridded data). More details about the data sets can be found on <https://data.hub.geosphere.at/> as well as in the API documentation available via <https://dataset.api.hub.geosphere.at/v1/docs/>.
 License: GPL-2
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
