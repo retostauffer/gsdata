@@ -1,5 +1,5 @@
 ---
-title: "Package Overview"
+title: "gsdata: Interface to the GeoSphere Austria DataHub API (Data Access)"
 author: "Reto Stauffer"
 output:
   rmarkdown::html_vignette:
@@ -7,43 +7,156 @@ output:
     toc: true
 link-citations: true
 vignette: >
-    %\VignetteIndexEntry{Package Overview}
+    %\VignetteIndexEntry{gsdata: Interface to the GeoSphere Austria DataHub API (Data Access)}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteDepends{gsdata}
     %\VignetteKeywords{GeoSphere, datasets}
     %\VignettePackage{gsdata}
 ---
 
-```{r, include = FALSE}
-library("gsdata")
+
+# Overview
+
+The handling and use of public sector data and information is
+standardised across Europe (public sector information; PSI). The aim
+is to make public sector data more easily accessible to achieve greater
+economic and social benefits.
+
+Since 2021 [GeoSphere Austria](https://geosphere.at/), 
+Austria's federal agency for geology, geophysics, climatology and meteorology,
+started granting access via their [data hub API](https://data.hub.geosphere.at/).
+In early 2024 the API does not only allow to access station data (high quality
+in-situ measurements from weather stations) but also spatial data including
+high-resolution near-real time analysis, spatial climatologies, but also high-resolution
+weather forecasts.
+
+The `gsdata` package (GeoSphere data) provides an easy to use interface to request
+and process these data sets. In version `0.0.8` only station data can be processed,
+but functionality for gridded data (spatial data) will be added soon.
+
+More detailed overviews and examples are provided in the
+[online documentation](https://retostauffer.github.io/gsdata/) of the _gsdata_ package:
+
+* [Datasets](https://retostauffer.github.io/gsdata/articles/datasets.html)
+* [Metadata](https://retostauffer.github.io/gsdata/articles/metadata.html)
+* [Stationdata](https://retostauffer.github.io/gsdata/articles/stationdata.html)
+* [Changelog](https://retostauffer.github.io/gsdata/news/index.html)
+
+# Installation
+
+The stable release of `gsdata` is hosted on the Comprehensive R Archive Network
+(CRAN) at <https://CRAN.R-project.org/packge=gsdata> and can be installed via
+
+```{r, eval = FALSE}
+install.packages("gsdata")
 ```
 
-TODO(R): Ovrview vignett for R CMD build; the only vignette we'll
-include (rest is pkgdown content).
+Note that it depends on [`sf`](https://CRAN.R-project.org/package=sf),
+thus additional installation of GDAL, GEOS, PROJ and sqlite3 might be needed
+(see [`sf` system requirements](https://CRAN.R-project.org/package=sf)).
+The development version of `gsdata` is hosted on
+[github](https://github.com/retostauffer/gsdata) from where the current
+development version can be installed using
 
-Returns available data sets. Note that the current default is set to
-`type = "station"` (see `gs_datasets()`) as this package only allows
-for downloading stationdata.
+```{r, eval = FALSE}
+library("remotes")
+install_github("retostauffer/gsdata")
+```
 
 ```{r, include = FALSE}
-options("gsdata.cooldown" = 1)
+# Setting cooldown (no more than 1 request every X seconds)
+options("gsdata.cooldown" = 0.25)
+suppressPackageStartupMessages(library("gsdata"))
 ```
+
+# Available data sets
+
+The function `gs_datasets()` retrieves information about all available
+data sets. By default `type = "station"`, `mode = NULL` is used, thus only
+returning information about station data datasets. This can be changed
+if needed (see `?gs_dataset`, or in the
+[online documentation](https://retostauffer.github.io/gsdata/articles/datasets.html)).
 
 ```{r}
 library("gsdata")
-(ds <- gs_datasets())
+ds <- gs_datasets()
+head(ds, n = 3)
 ```
 
-The function `gs_datasets()` returns a `data.frame` which includes
-a series of information including:
+```{r}
+ds <- gs_datasets(type = "grid", mode = "historical")
+head(ds, n = 3)
+```
 
-* `type`: data set type (currently defaults to `type = "station"`)
-* `mode`: historical or current (latest available observation)
-* `resource_id`: ID/name of the dataset or resource
-* ... and some more
+# Metadata
 
-Most important are `type`, `mode` and `resource_id` which allow
-to download additional meta data (see `gs_metadata()`) as well
-as the data itself (see `gs_stationdata()`).
+Function `gs_metadata()` allows to retrieve meta information about a specific data
+set.
+
+
+```{r}
+meta <- gs_metadata(type = "station", mode = "historical",
+                    resource_id = "tawes-v1-10min", expert = TRUE)
+names(meta)
+```
+
+The return differs for different types of data. If `type = "station"` the
+return of `gs_metadata()` contains e.g., information about the time period data
+is available (`$start_time`, `$end_time`) but also a data.frame with all available
+parameters (`$parameters`; not all parameters are available for all stations).
+
+```{r}
+# parameters: data.frame with name, description and unit (DE)
+head(meta$parameters, n = 2)
+```
+
+In addition a list of available stations is returned (`$stations`)
+which contains the station identifier (`id`) required to request
+data via the API.
+
+```{r, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+# stations: a simple feature (sf) data.frame
+subset(meta$stations, grepl("INNSBRUCK", name))
+plot(meta$stations["altitude"], pch = 19,
+     main = "\nLocation and altitude of all available stations")
+```
+
+This grants easy access to the data sets meta information, check for available
+stations and parameters as well as the `id` of the station which is required
+for accessing observational data (next chapter). Note that the station `id`
+may vary between different data sets!
+
+
+# Station data
+
+Function `gs_stationdata()` allows to retrieve data of type `"station"` (measurements
+at station level). The following example retrieves temperature (`"TL"`) and
+dew point temperature (`"TP"`) observations for January 1, 2024 of two 
+automated weather stations (tawes); namely
+station Innsbruck airport (`11121`) and Innsbruck University (`11320`).
+
+```{r}
+tawes <- gs_stationdata(mode        = "historical",
+                        resource_id = "tawes-v1-10min",
+                        start       = "2024-01-01",
+                        end         = "2024-01-02",
+                        parameters  = c("TL", "TP"),
+                        station_ids = c(11121, 11320),
+                        expert      = TRUE)
+names(tawes)
+```
+
+`gs_stationdata()` either returns a single `zoo` time series object
+(precisely an object of class `c("gs_stationdata", "zoo")`) if data for
+one single station is requested, or a list of objects for each of the
+stations as in the example above.
+
+```{r, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+plot(tawes[["11121"]], screen = 1, col = c("red", "limegreen"), lwd = 2)
+plot(tawes[["11320"]], screen = 1, col = c("red", "limegreen"), lwd = 2)
+```
+
+
+
 
 

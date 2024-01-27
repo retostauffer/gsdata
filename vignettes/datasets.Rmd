@@ -23,11 +23,11 @@ Returns available data sets. Note that the current default is set to
 `type = "station"` (see `gs_datasets()`) as this package only allows
 for downloading stationdata.
 
-```{r, include = FALSE}
+```{r setting_cooldown, include = FALSE}
 options("gsdata.cooldown" = 1)
 ```
 
-```{r}
+```{r gs_datasets_example1}
 library("gsdata")
 (ds <- gs_datasets())
 ```

@@ -12,7 +12,7 @@ see https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html."><meta pr
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@ Not needed (ignored) when <code>mode = "current"</code>.</p></dd>
 <dd><p>logical, defaults to <code>FALSE</code>. If <code>TRUE</code> the script will not
 check if the input arguments are valid. May result in unsuccessful requests
 but increases the speed as <code><a href="gs_datasets.html">gs_datasets()</a></code> and <code><a href="gs_metadata.html">gs_metadata()</a></code>
-do not have to be evaluated.</p></dd>
+do not have to be called (two API requests less).</p></dd>
 
 
 <dt>version</dt>
@@ -150,17 +150,15 @@ is available) is returned. The name of the list corresponds to the station id re
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function is a convenience function for downloading different sets of
-station data from the GeoSphere Austria data hub (formerly ZAMG). The API may change and additional
-resources may be added, for details see
+    <p>This function is a convenience function for downloading different
+sets of station data from the GeoSphere Austria data hub (formerly ZAMG).
+The API may change and additional resources may be added, for details see
 <a href="https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html" class="external-link">https://dataset.api.hub.geosphere.at/v1/docs/user-guide/endpoints.html</a>.</p>
 <p>To see what's available call <code>gs_datasets("station")</code>.</p>
 <p>The API has a limit for the number of elements for one request. The calculation
 is based on the number of expecte elements (i.e., number of stations times number
 of parameters times number of time steps). This function will pre-calculate the number
-of expected elements and split the request into batches along the time dimension - if needed.
-For current limits see
-<a href="https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request_size_limit.html" class="external-link">https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request_size_limit.html</a>.</p>
+of expected elements and split the request into batches along the time dimension - if needed.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -181,7 +179,7 @@ For current limits see
 <span class="r-in"><span><span class="co"># Air temp</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">TL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  19.3  20.2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3.1   2.7 </span>
 <span class="r-in"><span><span class="co"># Precipitation (rain)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">innsbruck</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">RR</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11121 11320 </span>
@@ -257,6 +255,7 @@ For current limits see
 <span class="r-in"><span>                            station_ids <span class="op">=</span> <span class="fl">11330</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimated number of elements to be retrieved: 196 (1 x 4 x 49)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Number of requests to be performed: 1 (limit set to 2e+05)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calling: https://dataset.api.hub.geosphere.at/v1/station/historical/synop-v1-1h?parameters=T,Td,ff&amp;start=2020-01-01T00:00&amp;end=2020-01-03T00:00&amp;station_ids=11330</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calling: https://dataset.api.hub.geosphere.at/v1/station/historical/synop-v1-1h?parameters=T,Td,ff&amp;start=2020-01-01T00:00&amp;end=2020-01-03T00:00&amp;station_ids=11330</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span></span>

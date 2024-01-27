@@ -1,4 +1,10 @@
 
+# gsdata 0.0-7
+
+* Fixed a series of small issues
+* Refactored internals
+* First CRAN release; currently limited to station data (will be extended to gridded data)
+
 # gsdata 0.0-6
 
 * Fixed a bug in `gs_stationdata()` when batching due to limit

@@ -36,7 +36,7 @@ plot.gs_stationdata <- function(x, main = NULL, xlab = NULL, ...) {
                         attr(x, "station")$coord[[2]], delta)
 
     }
+    if (is.null(xlab)) xlab <- ""
     zoo::plot.zoo(x, main = main, xlab = xlab, ...)
-
 
 }

@@ -16,6 +16,9 @@
     <loc>https://retostauffer.github.io/gsdata/articles/metadata.html</loc>
   </url>
   <url>
+    <loc>https://retostauffer.github.io/gsdata/articles/overview.html</loc>
+  </url>
+  <url>
     <loc>https://retostauffer.github.io/gsdata/articles/stationdata.html</loc>
   </url>
   <url>
@@ -29,6 +32,9 @@
   </url>
   <url>
     <loc>https://retostauffer.github.io/gsdata/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://retostauffer.github.io/gsdata/reference/API_GET.html</loc>
   </url>
   <url>
     <loc>https://retostauffer.github.io/gsdata/reference/gs_baseurl.html</loc>
@@ -46,6 +52,12 @@
     <loc>https://retostauffer.github.io/gsdata/reference/gs_temporal_interval.html</loc>
   </url>
   <url>
+    <loc>https://retostauffer.github.io/gsdata/reference/gsdata.html</loc>
+  </url>
+  <url>
     <loc>https://retostauffer.github.io/gsdata/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://retostauffer.github.io/gsdata/reference/show_http_status_and_terminate.html</loc>
   </url>
 </urlset>

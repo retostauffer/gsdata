@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,10 +73,12 @@
 
 
 
-<script src="datasets_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Datasets</h1>
-                        <h4 data-toc-skip class="author">Reto Stauffer</h4>
+                        <h4 data-toc-skip class="author">Reto
+Stauffer</h4>
             
       
       
@@ -85,7 +87,9 @@
 
     
     
-<p>Returns available data sets. Note that the current default is set to <code>type = "station"</code> (see <code><a href="../reference/gs_datasets.html">gs_datasets()</a></code>) as this package only allows for downloading stationdata.</p>
+<p>Returns available data sets. Note that the current default is set to
+<code>type = "station"</code> (see <code><a href="../reference/gs_datasets.html">gs_datasets()</a></code>) as this
+package only allows for downloading stationdata.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"gsdata"</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gs_datasets.html">gs_datasets</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -107,17 +111,24 @@
 <span><span class="co">## 6 https://dataset.api.hub.geosphere.at/v1/station/historical/tawes-v1-10min</span></span>
 <span><span class="co">## 7    https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min</span></span>
 <span><span class="co">## 8    https://dataset.api.hub.geosphere.at/v1/station/historical/synop-v1-1h</span></span></code></pre>
-<p>The function <code><a href="../reference/gs_datasets.html">gs_datasets()</a></code> returns a <code>data.frame</code> which includes a series of information including:</p>
+<p>The function <code><a href="../reference/gs_datasets.html">gs_datasets()</a></code> returns a
+<code>data.frame</code> which includes a series of information
+including:</p>
 <ul>
 <li>
-<code>type</code>: data set type (currently defaults to <code>type = "station"</code>)</li>
+<code>type</code>: data set type (currently defaults to
+<code>type = "station"</code>)</li>
 <li>
-<code>mode</code>: historical or current (latest available observation)</li>
+<code>mode</code>: historical or current (latest available
+observation)</li>
 <li>
 <code>resource_id</code>: ID/name of the dataset or resource</li>
 <li>… and some more</li>
 </ul>
-<p>Most important are <code>type</code>, <code>mode</code> and <code>resource_id</code> which allow to download additional meta data (see <code><a href="../reference/gs_metadata.html">gs_metadata()</a></code>) as well as the data itself (see <code><a href="../reference/gs_stationdata.html">gs_stationdata()</a></code>).</p>
+<p>Most important are <code>type</code>, <code>mode</code> and
+<code>resource_id</code> which allow to download additional meta data
+(see <code><a href="../reference/gs_metadata.html">gs_metadata()</a></code>) as well as the data itself (see
+<code><a href="../reference/gs_stationdata.html">gs_stationdata()</a></code>).</p>
   </main>
 </div>
 

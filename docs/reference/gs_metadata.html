@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">gsdata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,7 @@
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  version <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  expert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,6 +89,13 @@ is available in more than one type (e.g., \"grid\" and \"timeseries\").</p></dd>
 <dt>config</dt>
 <dd><p>empty list by default; can be a named list to be fowrarded
 to the <code><a href="https://httr.r-lib.org/reference/GET.html" class="external-link">httr::GET</a></code> request if needed.</p></dd>
+
+
+<dt>expert</dt>
+<dd><p>logical, defaults to <code>FALSE</code>. If <code>TRUE</code> the script will not
+check if the input arguments are valid. May result in unsuccessful requests
+but increases the speed as <code><a href="gs_datasets.html">gs_datasets()</a></code> does not have to be
+called (one less API request).</p></dd>
 
 
 <dt>verbose</dt>

@@ -35,7 +35,7 @@
 #' Return all data sets where \code{type == "grid"}:
 #' * \code{gs_datasets(type = "grid")}
 #'
-#' Can be combined (settinb both \code{type} and \code{mode}).
+#' Can be combined (setting both \code{type} and \code{mode}).
 #'
 #' @author Reto Stauffer
 #' @export
