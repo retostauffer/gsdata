@@ -319,9 +319,8 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
         if (verbose) {
             tmp <- lapply(query, function(x) paste(as.character(x), collapse = ","))
             tmp <- paste(names(tmp), unname(tmp), sep = "=", collapse = "&")
-            message("Calling: ", dataset$url, "?", tmp, sep = "")
         }
-            # Downloading meta data
+        # Downloading meta data
         content <- API_GET(dataset$url, config = config, query = query, verbose = verbose)
     
         # Extracting data (lists)
