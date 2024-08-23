@@ -55,6 +55,7 @@
 #' @author Reto Stauffer
 #' @export
 #' @importFrom sf st_as_sf
+#' @importFrom dplyr bind_rows
 #' @importFrom parsedate parse_iso_8601
 gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = list(), expert = FALSE, verbose = FALSE) {
 
@@ -114,9 +115,8 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
                    config = config, query = NULL, verbose = verbose)
 
     # Evaluate result
-    res$parameters <- do.call(rbind, lapply(res$parameters, as.data.frame))
-    res$stations   <- do.call(rbind, lapply(res$stations,
-        function(x) as.data.frame(lapply(x, function(x) ifelse(is.null(x), NA, x)))))
+    for (n in c("parameters", "stations"))
+        res[[n]] <- as.data.frame(bind_rows(res[[n]]))
 
     # Double-check if my format specification below is OK
     stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_from)))

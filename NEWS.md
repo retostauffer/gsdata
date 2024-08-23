@@ -1,9 +1,15 @@
 
+# gsdata 0.0-8
+
+* Appending `dplyr` as dependency, used internally to bind lists
+    of elements to `data.frame`s which can contain different elements and `NULL`s.
+* Updating `gs_metdata()` to address an issue when loading meta
+    information for `historical`, `klima-v2-1d`.
+
 # gsdata 0.0-7
 
 * Fixed a series of small issues
 * Refactored internals
-* First CRAN release; currently limited to station data (will be extended to gridded data)
 
 # gsdata 0.0-6
 
