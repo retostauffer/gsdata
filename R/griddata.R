@@ -5,15 +5,15 @@
 #' Accessing the API endpoint \code{v1/grid},
 #' see <https://dataset.api.hub.geosphere.at/v1/docs/getting-started.html>.
 #'
+#' @param x either path to a netcdf file or an object which has a \code{st_bbox()}
+#'        method; defines the spatial extent to be downloaded and the object returned
+#'        (see section 'What to download/return').
 #' @param mode character, specify mode of data.
 #' @param resource_id character, specify resource identifier of data.
 #' @param parameters character vector to define which parameters to process.
 #' @param start,end object of class \code{Date}, \code{POSIXt}, or \code{character}.
 #'        In case of character in a non-ISO format \code{format} can be used (see below).
 #'        Not needed (ignored) when \code{mode = "current"}.
-#' @param what either path to a netcdf file or an object which has a \code{st_bbox()}
-#'        method; defines the spatial extent to be downloaded and the object returned
-#'        (see section 'What to download/return').
 #' @param expert logical, defaults to \code{FALSE}. If \code{TRUE} the script will not
 #'        check if the input arguments are valid. May result in unsuccessful requests
 #'        but increases the speed as \code{gs_datasets()} and \code{gs_metadata()}
@@ -66,14 +66,29 @@
 #' @importFrom httr GET write_disk status_code
 #' @importFrom sf st_point
 #' @importFrom parsedate parse_iso_8601
-gs_gridded <- function(mode, resource_id, parameters = NULL, start = NULL,
-                        end = NULL, what = NULL, expert = FALSE,
-                        overwrite = FALSE, verbose = FALSE, format = NULL,
-                        limit = 2e5, config = list()) {
+gs_gridded <- function(x, mode, resource_id, parameters = NULL, start = NULL,
+                       end = NULL, bbox = NULL, expert = FALSE,
+                       overwrite = FALSE, verbose = FALSE, format = NULL,
+                       limit = 2e5, config = list()) {
 
     # Requires NetCDF4 to be installed
     requireNamespace("ncdf4")
     requireNamespace("jsonlite")
+
+    # Checking argument 'x'
+    if (is.character(x) && length(x) == 1L) {
+        if (dirname(x) != "." && !dir.exists(dirname(x)))
+            stop(sprintf("x = \"%s\" requires directory \"%s\" to exist (not existing)!",
+                 x, dirname(x)))
+        # If overwrite = FALSE we will exit if the file already exists.
+        if (!overwrite && file.exists(x))
+            stop(sprintf("file \"%s\" already exists; not allowed to overwrite (overwrite = FALSE)", x))
+
+        # Verbose
+        if (verbose) message("Data will be stored to \"", x, "\".", sep = "")
+    } else {
+        stop("check if has st_bbox")
+    }
 
     stopifnot("argument 'mode' must be character of length 1" =
               is.character(mode) & length(mode) == 1L)
@@ -89,21 +104,6 @@ gs_gridded <- function(mode, resource_id, parameters = NULL, start = NULL,
     stopifnot("argument verbose must be logical TRUE or FALSE" =
               isTRUE(verbose) || isFALSE(verbose))
 
-    # Checking argument 'what'
-    if (is.character(what) && length(what) == 1L) {
-        if (dirname(what) != "." && !dir.exists(dirname(what)))
-            stop(sprintf("what = \"%s\" requires directory \"%s\" to exist (not existing)!",
-                 what, dirname(what)))
-        # If overwrite = FALSE we will exit if the file already exists.
-        if (!overwrite && file.exists(what))
-            stop(sprintf("file \"%s\" already exists; not allowed to overwrite (overwrite = FALSE)", what))
-
-        # Verbose
-        if (verbose) message("Data will be stored to \"", what, "\".", sep = "")
-    } else {
-        stop("check if has st_bbox")
-    }
-
 
     # Matching 'mode'.
     match_mode <- function(mode, known = c("forecast", "historical")) {
@@ -118,7 +118,7 @@ gs_gridded <- function(mode, resource_id, parameters = NULL, start = NULL,
         dataset <- list(url = paste(gs_baseurl(), "grid", mode, resource_id, sep = "/"))
         meta    <- NULL # required for get grid size
     } else {
-        # Check if the combination is valid and what the URL is
+        # Check if the combination is valid and xt the URL is
         dataset <- gs_datasets(mode = mode, type = "grid")
 
         # Sanity checks
@@ -163,19 +163,18 @@ gs_gridded <- function(mode, resource_id, parameters = NULL, start = NULL,
         stop("Whoops, no rule to process mode == \"", mode, "\".", sep = "")
     }
 
-    # File where to store the netcdf file. If `what` is character,
+    # File where to store the netcdf file. If `x` is character,
     # that is the name of the file to be written. All we will return
     # at the end is that file name - the user then needs to process
     # it himself/herself.
     # Else we use a temporary file and use st_extract to get the required
     # data before deleting the temporary NetCDF file again.
-    ncfile <- if (is.character(what)) what else tempfile(fileext = ".nc")
+    ncfile <- if (is.character(x)) x else tempfile(fileext = ".nc")
 
-    q <- list(parameters    = parameters,
+    q <- list(parameters    = paste(trimws(parameters), collapse = ","),
               start         = start,
               end           = end,
               # Limits according to API doc, slightly too big on some end
-              # bbox          = "45.77,7.1,49.48,17.74", # SWNE
               bbox          = "46.00,8.0,49.0,17.0", # SWNE
               output_format = "netcdf")
 
@@ -186,8 +185,8 @@ gs_gridded <- function(mode, resource_id, parameters = NULL, start = NULL,
         show_http_status_and_terminate(status_code(req), err)
     }
 
-    if (is.character(what)) {
-        return(what)
+    if (is.character(x)) {
+        return(x)
     } else {
         cat("processing data ...\n")
     }

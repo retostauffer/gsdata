@@ -83,8 +83,9 @@ gs_metadata <- function(mode, resource_id, type = NULL, config = list(), expert 
 
         # More than one match?
         if (nrow(dataset) > 1L && is.null(type)) {
-            stop("Found ", nrow(dataset), " datasets matching the input arguments. ",
-                 "Please specify the 'type' argument.")
+            stop("Found ", nrow(dataset), " datasets matching the input arguments.",
+                 "\n  Please specify the 'type' argument (",
+                 paste(sprintf("type = \"%s\"", dataset$type), collapse = " or "), ")")
         }
         if (nrow(dataset) == 0) {
             stop("Could not find data set for station with mode = \"", mode, "\" ",
