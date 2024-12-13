@@ -328,7 +328,7 @@ gs_stationdata <- function(mode, resource_id, parameters = NULL, start = NULL,
         attributes <- list() # Store additional information:w
 
         for (rec in content$features) {
-            stn <- rec$properties$station
+            stn <- as.character(rec$properties$station)
             tmp <- lapply(rec$properties$parameters, function(x) sapply(x$data, function(y) ifelse(is.null(y), NA_real_, y)))
             final[[stn]] <- c(final[[stn]], tmp)
             # Keep attributes
