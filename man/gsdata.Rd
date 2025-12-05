@@ -2,8 +2,8 @@
 % Please edit documentation in R/gsdata.R
 \docType{package}
 \name{gsdata}
-\alias{gsdata}
 \alias{gsdata-package}
+\alias{gsdata}
 \title{\code{gsdata}: Interface to the GeoSphere Austria DataHub API (Data Access)}
 \description{
 This package allows convenient access to data provided by GeoSphere Austria
@@ -68,6 +68,13 @@ requests this is a good way to be nice to the data provider!
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://retostauffer.github.io/gsdata}
+}
+
+}
 \author{
 \strong{Maintainer}: Reto Stauffer \email{reto.stauffer@uibk.ac.at} (\href{https://orcid.org/0000-0002-3798-5507}{ORCID})
 

@@ -118,13 +118,22 @@ gs_metadata <- function(mode, resource_id, type = NULL, version = 1L, config = l
     for (n in c("parameters", "stations"))
         res[[n]] <- as.data.frame(bind_rows(res[[n]]))
 
-    # Double-check if my format specification below is OK
-    stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_from)))
-    stopifnot("unexpected time format" = all(grepl("\\+00:00$", res$stations$valid_to)))
+    # Datetime information can come in different formats;
+    # - "1972-01-01T00:00:00"
+    # - "1972-01-01T00:00:00+00:00"
+    # We try to check which format we have to convert to POSIXct
+    get_datetime <- function(x) {
+        if (all(grepl("\\+00:00$", x))) {
+            as.POSIXct(x, format = "%Y-%m-%dT%H:%M+00:00")
+        } else {
+            as.POSIXct(x, format = "%Y-%m-%dT%H:%M")
+        }
+    }
+
     res$stations <- transform(res$stations,
                               id         = as.integer(id),
-                              valid_from = as.POSIXct(valid_from, format = "%Y-%m-%dT%H:%M+00:00"),
-                              valid_to   = as.POSIXct(valid_to,   format = "%Y-%m-%dT%H:%M+00:00"))
+                              valid_from = get_datetime(valid_from),
+                              valid_to   = get_datetime(valid_to))
 
     # Convert to sf data.frame
     res$stations <- st_as_sf(res$stations, coords = c("lon", "lat"), crs = 4326)

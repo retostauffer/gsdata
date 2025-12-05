@@ -53,7 +53,12 @@ mayrhofen <- gs_stationdata(mode        = "historical",
 
 # zoo object
 head(mayrhofen)
+```
 
+```{r}
+#| fig.alt: >
+#|     Time-series plot showing observed air temperature and dewpoint temperature
+#|     as well as observed mean wind speed between January 1th and January 11th, 2022.
 # simple zoo plot
 plot(mayrhofen,
      screen = c(1, 1, 2),
@@ -126,6 +131,8 @@ two stations do not provide the data for the very same parameters.  Parameters
 not providing any data will not be included in the return.
 
 ```{r, plot = TRUE, fig.width = 12, fig.height = 10}
+#| fig.alt: >
+#|      Default zoo time series plot for station 11330 and station 11120.
 lapply(x[c("11330", "11120")], dim)
 # Default plots
 plot(x[["11330"]], nc = 3, col = "steelblue", type = "o", pch = 4)
@@ -161,6 +168,9 @@ information on the return.
 * Stations: single station, `8807` Achenkirch
 
 ```{r, meta_data_hist_klima_achenkirch, plot = TRUE, fig.width = 10, fig.height = 6}
+#| fig.alt: >
+#|      Time series plot of daily climate data (resource klima-v1-1d) between
+#|      June 2020 and December 2022 as observed at atation 8807, Achenkirch.
 meta <- gs_metadata("historical", "klima-v1-1d")
 achenkirch <- gs_stationdata(mode        = "historical",
                              resource_id = "klima-v1-1d",
@@ -182,6 +192,11 @@ plot(achenkirch, type = "h")
 * Stations: single station, `8807` Achenkirch
 
 ```{r meta_data_hist_klima_uibk, plot = TRUE, fig.width = 10, fig.height = 6}
+#| fig.alt: >
+#|      Time series plot of observations with a 10-min temporal resolution
+#|      showing air temperature as well as mean wind speed and gust speed
+#|      observed at station 11803 (Achenkirch) between November 1st 2010
+#|      and February 1st, 2011.
 meta <- gs_metadata("historical", "klima-v1-10min")
 uibk <- gs_stationdata(mode        = "historical",
                        resource_id = "klima-v1-10min",
@@ -189,7 +204,7 @@ uibk <- gs_stationdata(mode        = "historical",
                        end         = "2011-02-01",
                        parameters  = c("TL", "FFAM", "FFX"),
                        station_ids = 11803,
-                       verbose = TRUE,
+                       verbose     = TRUE,
                        expert      = TRUE)
 plot(uibk,
      screens = c(1, 2, 2),
@@ -211,6 +226,10 @@ provides long-term historical quality-controlled data. Station IDs (and
 available parameters) differ, tough.
 
 ```{r data_hist_tawes_ibkap, plot = TRUE, fig.width = 10, fig.height = 6}
+#| fig.alt: >
+#|      Time series plot observed air temperature, dewpoint temperature,
+#|      mean wind speed and gust speed for station 11121 (Innsbruck Airport)
+#|      over (the last) 30 days.
 ibkap <-  gs_stationdata(mode        = "historical",
                          resource_id = "tawes-v1-10min",
                          start       = Sys.Date() - 30,    # Today - 30 days (system time)

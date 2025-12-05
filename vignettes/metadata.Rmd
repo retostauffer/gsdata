@@ -50,9 +50,20 @@ station `is_active`.
 
 
 ```{r, fig = TRUE, fig.width = 8, fig.height = 4}
+#| fig.alt: >
+#|    Spatial plot showing the location of all stations
+#|    available via this resource (synop-v1-1h).
 plot(meta$station["altitude"],
      main = "Station location and altitude",
      pch = 19, cex = 1)
+```
+
+
+```{r, fig = TRUE, fig.width = 8, fig.height = 4}
+#| fig.alt: >
+#|    Spatial plot showing the location of all stations (synop-v1-1h)
+#|    where the symbols indicate whether or not the station is still
+#|    active or not.
 plot(meta$station["is_active"],
      main = "Station status (active/inactive)",
      col = ifelse(meta$station$is_active, "#089392", "#CF597E"),

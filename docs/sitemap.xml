@@ -1,63 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/404.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/articles/datasets.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/articles/metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/articles/overview.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/articles/stationdata.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/contact.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/index.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/API_GET.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gs_baseurl.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gs_datasets.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gs_metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gs_stationdata.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gs_temporal_interval.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/gsdata.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://retostauffer.github.io/gsdata/reference/show_http_status_and_terminate.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://retostauffer.github.io/gsdata/404.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/LICENSE-text.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/articles/datasets.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/articles/index.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/articles/metadata.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/articles/overview.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/articles/stationdata.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/authors.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/contact.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/index.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/news/index.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/API_GET.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gs_baseurl.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gs_datasets.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gs_metadata.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gs_stationdata.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gs_temporal_interval.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/gsdata.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/index.html</loc></url>
+<url><loc>https://retostauffer.github.io/gsdata/reference/show_http_status_and_terminate.html</loc></url>
 </urlset>
+

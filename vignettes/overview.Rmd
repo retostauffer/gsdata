@@ -114,7 +114,10 @@ In addition a list of available stations is returned (`$stations`)
 which contains the station identifier (`id`) required to request
 data via the API.
 
-```{r, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+```{r tawes_demoplot_spatial, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+#| fig.alt: >
+#|    Spatial plot showing the location of all tawes stations
+#|    available via this resource (tawes-v1-10min).
 # stations: a simple feature (sf) data.frame
 subset(meta$stations, grepl("INNSBRUCK", name))
 plot(meta$stations["altitude"], pch = 19,
@@ -138,8 +141,8 @@ station Innsbruck airport (`11121`) and Innsbruck University (`11320`).
 ```{r}
 tawes <- gs_stationdata(mode        = "historical",
                         resource_id = "tawes-v1-10min",
-                        start       = "2024-01-01",
-                        end         = "2024-01-02",
+                        start       = Sys.Date() - 3,
+                        end         = Sys.Date(),
                         parameters  = c("TL", "TP"),
                         station_ids = c(11121, 11320),
                         expert      = TRUE)
@@ -151,8 +154,17 @@ names(tawes)
 one single station is requested, or a list of objects for each of the
 stations as in the example above.
 
-```{r, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+```{r tawes_demoplot_11121, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+#| fig.alt: >
+#|     Time series plot showing air temperature and dewpoint temperature
+#|     over three consecutive days observed at station 11121 (Innsbruck Airport).
 plot(tawes[["11121"]], screen = 1, col = c("red", "limegreen"), lwd = 2)
+```
+
+```{r tawes_demoplot_11320, fig = TRUE, fig.width = 6, fig.height = 3.5, out.width = "100%"}
+#| fig.alt: >
+#|     Time series plot showing air temperature and dewpoint temperature
+#|     over three consecutive days observed at station 11320 (Innsbruck University).
 plot(tawes[["11320"]], screen = 1, col = c("red", "limegreen"), lwd = 2)
 ```
 
